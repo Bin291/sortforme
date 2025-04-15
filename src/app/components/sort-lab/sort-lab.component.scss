@@ -43,13 +43,35 @@
 
 }
 
-.bar-cuong{
+
+
+.bar-cuong {
+  display: flex; /* Sử dụng flexbox để sắp xếp các phần tử */
+  justify-content: flex-start; /* Căn trái để dễ dàng cuộn */
+  align-items: flex-end;
+  gap: 5px; /* Khoảng cách giữa các thanh */
+  transition: transform 0.3s; /* Hiệu ứng chuyển tiếp cho các phần tử */
+  transform: scaleX(0.5) ; /* Giảm kích thước chiều ngang */
+  overflow-x: auto; /* Cho phép cuộn ngang nếu cần */
+  overflow-y: hidden; /* Ẩn cuộn dọc */
+  white-space: nowrap; /* Ngăn ngừa xuống dòng */
+  padding: 5px; /* Thêm khoảng cách bên trong */
+
+}
+
+.chart-item {
+  min-width: 100px; /* Đặt chiều rộng tối thiểu cho các item */
+  height: 50px; /* Chiều cao của các item */
+  background-color: #007bff; /* Màu nền cho các item */
+  color: white; /* Màu chữ */
   display: flex;
   justify-content: center;
-  align-items: flex-end;
-  gap: 5px; /* Space between bars */
-  width: 100%;
-  max-width: 100%;
+  align-items: center;
+  transition: transform 0.3s; /* Hiệu ứng chuyển tiếp cho các phần tử */
+}
+
+.chart-item:hover {
+  transform: scale(1.1); /* Phóng to phần tử khi hover */
 }
 
 //.bar-original{
@@ -61,12 +83,12 @@
 //  //border-radius: 5px;
 //}
 //
-//.bar-wrap{
-//  margin-left: 1px;
-//  margin-right: 1px;
-//  border-radius: 10px;
-//  background-color: rgb(98 55 174);
-//}
+.bar-wrap{
+  margin-left: 1px;
+  margin-right: 1px;
+  border-radius: 10px 10px 0 0;
+  background-color: rgb(98 55 174);
+}
 
 .header h1 {
   font-size: 1.8rem;
@@ -489,7 +511,7 @@
   min-height: 25%;
   width: 100%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  background-color: #b79eff;
+  background-color: #f5f5f5;
   border-radius: 8px;
   display: flex;
   justify-content: center;

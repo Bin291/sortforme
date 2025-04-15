@@ -37,8 +37,23 @@
 <!--          </div>-->
 <!--        </div>-->
 <!--      </div>-->
+
+
             <div class="original-chart">
-<p> phan cua sang</p>
+                <div>
+                    <div class="bar-cuong">
+                        <div *ngFor="let num of numbers" class="bar-original">
+                            <div
+                                class="bar-wrap"
+                                [style.height.px]="getBarHeight(num, numbers)"
+                                [style.width.px]="getBarWidth(numbers)"
+                                [style.backgroundColor]="'rgb(98 55 174)'"
+                            ></div>
+                            <div class="bar-label">{{ num }}</div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
 
 
