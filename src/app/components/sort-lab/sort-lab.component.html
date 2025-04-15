@@ -38,7 +38,7 @@
 <!--      </div>-->
 
 
-            <div class="original-chart">
+            <div class="original-chart" *ngIf="mode === 'single'">
                 <div>
                     <div class="bar-cuong">
                         <div *ngFor="let num of numbers" class="bar-original">

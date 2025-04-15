@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy, SimpleChanges, Output, EventEmitter, ViewChild} from '@angular/core';
+import {Component, OnInit, OnDestroy, Output, EventEmitter, ViewChild} from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
@@ -6,13 +6,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSliderModule } from '@angular/material/slider';
 import { FormsModule } from '@angular/forms';
 import {NgClass, NgForOf, NgIf} from '@angular/common';
-import { Router } from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 import {RandomDialogComponent} from '../random-dialog/random-dialog.component';
-import { AlgorithmPseudocode } from '../../shared/algorithm-pseudo';
 import {CodeHighlightComponent} from '../code-highlight/code-highlight.component';
 import {SortingChartComponent} from '../sorting-chart/sorting-chart.component';
-import {delay} from 'rxjs';
+
 
 
 interface AlgorithmState {
@@ -158,7 +156,7 @@ export class SortLabComponent implements OnInit, OnDestroy {
     insertion: '1. Iterate through the array, starting from the second element\n2. For each element, compare it with the elements to its left\n3. Insert the element in the correct position in the sorted portion',
     bubble: '1. Iterate through the array multiple times\n2. Compare adjacent elements and swap if they are in the wrong order\n3. Repeat until no swaps are needed',
     quick: '1. Choose a pivot element\n2. Partition the array around the pivot\n3. Recursively sort the sub-arrays',
-    shell: '1. Divide the array into smaller subarrays using a gap\n2. Sort each subarray using insertion sort\n3. Reduce the gap and repeat until the gap is 1',
+    shell: '1. Divide the array into smaller arrays using a gap\n2. Sort each subarray using insertion sort\n3. Reduce the gap and repeat until the gap is 1',
     radix: '1. Sort numbers digit by digit, starting from the least significant digit\n2. Use counting sort for each digit\n3. Repeat for all digits until the most significant digit',
     selection: '1. Iterate through the array to find the minimum element\n2. Swap the minimum element with the first unsorted element\n3. Repeat for the remaining unsorted portion',
   };
@@ -229,22 +227,22 @@ export class SortLabComponent implements OnInit, OnDestroy {
   }
 
 
-getBarHeightOriginal(num: number, numbers: number[]): number {
-  const containerHeight = 300; // Maximum height of the container
-  const maxNumber = Math.max(...numbers); // Find the maximum number in the array
-  const minHeight = 10; // Minimum bar height
-  const calculatedHeight = (num / maxNumber) * containerHeight; // Scale height based on the container
-  return Math.max(minHeight, calculatedHeight); // Ensure it doesn't go below the minimum height
-}
-
-getBarWidthOriginal(numbers: number[]): number {
-  const containerWidth = 225; // Maximum width of the container
-  const numElements = numbers.length; // Number of elements
-  const baseWidth = containerWidth / numElements; // Calculate width based on the container
-  const maxWidth = 10; // Maximum bar width
-  const minWidth = 5; // Minimum bar width
-  return Math.max(minWidth, baseWidth); // Ensure it doesn't go below the minimum width
-}
+// getBarHeightOriginal(num: number, numbers: number[]): number {
+//   const containerHeight = 300; // Maximum height of the container
+//   const maxNumber = Math.max(...numbers); // Find the maximum number in the array
+//   const minHeight = 10; // Minimum bar height
+//   const calculatedHeight = (num / maxNumber) * containerHeight; // Scale height based on the container
+//   return Math.max(minHeight, calculatedHeight); // Ensure it doesn't go below the minimum height
+// }
+//
+// getBarWidthOriginal(numbers: number[]): number {
+//   const containerWidth = 225; // Maximum width of the container
+//   const numElements = numbers.length; // Number of elements
+//   const baseWidth = containerWidth / numElements; // Calculate width based on the container
+//   const maxWidth = 10; // Maximum bar width
+//   const minWidth = 5; // Minimum bar width
+//   return Math.max(minWidth, baseWidth); // Ensure it doesn't go below the minimum width
+// }
 
 
 
@@ -279,12 +277,11 @@ getBarWidthOriginal(numbers: number[]): number {
     this.reset(); // xử lý lại nếu cần
   }
 
-  onInputChange(index: number): void {
-    if (this.numbers[index] == null) {
-      this.removeNumber(index);
-    }
-
-  }
+  // onInputChange(index: number): void {
+  //   if (this.numbers[index] == null) {
+  //     this.removeNumber(index);
+  //   }
+  // }
   // randomize() {
   //   this.numbers = Array.from({ length: 25 }, () => Math.floor(Math.random() * 20) + 1);
   //   this.reset();
