@@ -13,7 +13,6 @@ import { AlgorithmPseudocode } from '../../shared/algorithm-pseudo';
 import {CodeHighlightComponent} from '../code-highlight/code-highlight.component';
 import {SortingChartComponent} from '../sorting-chart/sorting-chart.component';
 import {delay} from 'rxjs';
-import {SortVisualizationComponent} from '../sort-visualization/sort-visualization.component';
 
 
 interface AlgorithmState {
@@ -56,7 +55,7 @@ interface AlgorithmState {
     NgIf,
     CodeHighlightComponent,
     SortingChartComponent,
-    SortVisualizationComponent,
+
 
 
   ],

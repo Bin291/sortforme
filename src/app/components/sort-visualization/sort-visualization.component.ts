@@ -1,10 +1,11 @@
 import {Component, Input} from '@angular/core';
-import {NgForOf} from '@angular/common';
+import {NgForOf, NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-sort-visualization',
   imports: [
-    NgForOf
+    NgForOf,
+    NgIf
   ],
   templateUrl: './sort-visualization.component.html',
   styleUrl: './sort-visualization.component.scss'

@@ -52,23 +52,21 @@
   max-width: 100%;
 }
 
-.bar-original{
-  max-width: 2px;
-  height: 100%;
-  padding: 5px;
-  overflow: hidden;
-  object-fit: cover;
-  //border-radius: 5px;
-}
-
-.bar-wrap{
-  margin-left: 0.5px;
-  margin-right: 0.5px;
-  border-radius: 10px;
-  background-color: rgb(98 55 174);
-
-
-}
+//.bar-original{
+//  max-width: 2px;
+//  height: 100%;
+//  padding: 5px;
+//  overflow: hidden;
+//  object-fit: cover;
+//  //border-radius: 5px;
+//}
+//
+//.bar-wrap{
+//  margin-left: 1px;
+//  margin-right: 1px;
+//  border-radius: 10px;
+//  background-color: rgb(98 55 174);
+//}
 
 .header h1 {
   font-size: 1.8rem;
@@ -491,7 +489,7 @@
   min-height: 25%;
   width: 100%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  //background-color: #b79eff;
+  background-color: #b79eff;
   border-radius: 8px;
   display: flex;
   justify-content: center;
