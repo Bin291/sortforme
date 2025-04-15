@@ -146,7 +146,7 @@ export class SortLabComponent implements OnInit, OnDestroy {
       '      j -= gap',
       '    arr[j] = temp'
     ],
-    radix: [
+   g radix: [
       'getMax(arr, n)',
       'for exp = 1; max/exp > 0; exp *= 10',
       '  countSort(arr, n, exp)'
