@@ -228,6 +228,27 @@ export class SortLabComponent implements OnInit, OnDestroy {
     return Math.max(minWidth, calculatedWidth);
   }
 
+
+getBarHeightOriginal(num: number, numbers: number[]): number {
+  const containerHeight = 300; // Maximum height of the container
+  const maxNumber = Math.max(...numbers); // Find the maximum number in the array
+  const minHeight = 10; // Minimum bar height
+  const calculatedHeight = (num / maxNumber) * containerHeight; // Scale height based on the container
+  return Math.max(minHeight, calculatedHeight); // Ensure it doesn't go below the minimum height
+}
+
+getBarWidthOriginal(numbers: number[]): number {
+  const containerWidth = 225; // Maximum width of the container
+  const numElements = numbers.length; // Number of elements
+  const baseWidth = containerWidth / numElements; // Calculate width based on the container
+  const maxWidth = 10; // Maximum bar width
+  const minWidth = 5; // Minimum bar width
+  return Math.max(minWidth, baseWidth); // Ensure it doesn't go below the minimum width
+}
+
+
+
+
   addNumber() {
     if (this.newNumber !== null) {
       if (this.newNumber > 1000) {
