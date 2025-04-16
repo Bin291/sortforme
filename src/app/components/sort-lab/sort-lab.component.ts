@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy, SimpleChanges, Output, EventEmitter, ViewChild} from '@angular/core';
+import {Component, OnInit, OnDestroy, Output, EventEmitter, ViewChild} from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
@@ -251,7 +251,27 @@ export class SortLabComponent implements OnInit, OnDestroy {
     return Math.max(minWidth, calculatedWidth);
   }
 
-  // --- Input handling functions (addNumber, checkEmptyOrInvalid, removeNumber, onInputChange) remain unchanged ---
+
+// getBarHeightOriginal(num: number, numbers: number[]): number {
+//   const containerHeight = 300; // Maximum height of the container
+//   const maxNumber = Math.max(...numbers); // Find the maximum number in the array
+//   const minHeight = 10; // Minimum bar height
+//   const calculatedHeight = (num / maxNumber) * containerHeight; // Scale height based on the container
+//   return Math.max(minHeight, calculatedHeight); // Ensure it doesn't go below the minimum height
+// }
+//
+// getBarWidthOriginal(numbers: number[]): number {
+//   const containerWidth = 225; // Maximum width of the container
+//   const numElements = numbers.length; // Number of elements
+//   const baseWidth = containerWidth / numElements; // Calculate width based on the container
+//   const maxWidth = 10; // Maximum bar width
+//   const minWidth = 5; // Minimum bar width
+//   return Math.max(minWidth, baseWidth); // Ensure it doesn't go below the minimum width
+// }
+
+
+
+
   addNumber() {
     if (this.newNumber !== null) {
       if (this.newNumber > 1000) {
@@ -288,13 +308,15 @@ export class SortLabComponent implements OnInit, OnDestroy {
     this.reset();
   }
 
-  onInputChange(index: number): void {
-    // checkEmptyOrInvalid handles validation now
-    this.checkEmptyOrInvalid(index);
-    this.reset(); // Resetting on every input change might be too much? Consider resetting only on valid change completion.
-  }
-
-  // --- Randomize and Clear functions remain unchanged ---
+  // onInputChange(index: number): void {
+  //   if (this.numbers[index] == null) {
+  //     this.removeNumber(index);
+  //   }
+  // }
+  // randomize() {
+  //   this.numbers = Array.from({ length: 25 }, () => Math.floor(Math.random() * 20) + 1);
+  //   this.reset();
+  // }
   randomize() {
     const dialogRef = this.dialog.open(RandomDialogComponent, {
       width: '300px',

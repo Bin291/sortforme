@@ -23,22 +23,36 @@
 
 
     <section class="input-section">
-<!--<p>phan cua Cuong</p>-->
 <!--      <div class="original-chart" *ngIf="mode === 'single'">-->
 <!--        <div class="bar-cuong">-->
 <!--          <div *ngFor="let num of numbers" class="bar-original">-->
 <!--            <div-->
 <!--              class="bar-wrap"-->
-<!--              [style.height.px]="getBarHeight(num, numbers)"-->
-<!--              [style.width.px]="getBarWidth(numbers)"-->
+<!--              [style.height.px]="getBarHeightOriginal(num, numbers)"-->
+<!--              [style.width.px]="getBarWidthOriginal(numbers)"-->
 <!--              [style.backgroundColor]="'rgb(98 55 174)'"-->
 <!--            ></div>-->
 <!--            <div class="bar-label">{{ num }}</div>-->
 <!--          </div>-->
 <!--        </div>-->
 <!--      </div>-->
-            <div class="original-chart">
-<p> phan cua sang</p>
+
+
+            <div class="original-chart" *ngIf="mode === 'single'">
+                <div>
+                    <div class="bar-cuong">
+                        <div *ngFor="let num of numbers" class="bar-original">
+                            <div
+                                class="bar-wrap"
+                                [style.height.px]="getBarHeight(num, numbers)"
+                                [style.width.px]="getBarWidth(numbers)"
+                                [style.backgroundColor]="'rgb(98 55 174)'"
+                            ></div>
+                            <div class="bar-label">{{ num }}</div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
 
 
@@ -71,19 +85,7 @@
         <button mat-raised-button (click)="clear()">Clear</button>
         <button mat-raised-button color="primary" (click)="submit()">Submit</button>
       </div>
-<!--      <section class="description-section">-->
-<!--        <h2>Instructions</h2>-->
-<!--        <div class="algorithm-overview">-->
-<!--                <h3>Algorithm Overview</h3>-->
-<!--                <p>{{ algorithmDescription }}</p>-->
-<!--                <h3>Input Data</h3>-->
-<!--                <p>{{ numbers.join(', ') }}</p>-->
-<!--        </div>-->
-<!--        <div class="current-actions">-->
-<!--          <h3>Current Actions</h3>-->
-<!--          <p>{{ currentAction }}</p>-->
-<!--        </div>-->
-<!--      </section>-->
+
     </section>
 
     <!-- Visualization Section -->
@@ -138,7 +140,19 @@
 
 
           <div class="pe2">
-            <p>DebugTable of Loc Hoi</p>
+                  <section class="description-section">
+                    <h2>Instructions</h2>
+                    <div class="algorithm-overview">
+                            <h3>Algorithm Overview</h3>
+                            <p>{{ algorithmDescription }}</p>
+                            <h3>Input Data</h3>
+                            <p>{{ numbers.join(', ') }}</p>
+                    </div>
+                    <div class="current-actions">
+                      <h3>Current Actions</h3>
+                      <p>{{ currentAction }}</p>
+                    </div>
+                  </section>
           </div>
             </div>
 

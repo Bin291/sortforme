@@ -43,30 +43,53 @@
 
 }
 
-.bar-cuong{
-  display: flex;
-  justify-content: center;
+
+
+.bar-cuong {
+  display: flex; /* Sử dụng flexbox để sắp xếp các phần tử */
+  justify-content: flex-start; /* Căn trái để dễ dàng cuộn */
   align-items: flex-end;
-  gap: 5px; /* Space between bars */
-  width: 100%;
-  max-width: 100%;
+  gap: 5px; /* Khoảng cách giữa các thanh */
+  transition: transform 0.3s; /* Hiệu ứng chuyển tiếp cho các phần tử */
+  transform: scaleX(0.5) ; /* Giảm kích thước chiều ngang */
+  overflow-x: auto; /* Cho phép cuộn ngang nếu cần */
+  overflow-y: hidden; /* Ẩn cuộn dọc */
+  white-space: nowrap; /* Ngăn ngừa xuống dòng */
+  padding: 5px; /* Thêm khoảng cách bên trong */
+
 }
 
-//.bar-original{
-//  max-width: 2px;
-//  height: 100%;
-//  padding: 5px;
-//  overflow: hidden;
-//  object-fit: cover;
-//  //border-radius: 5px;
-//}
-//
-//.bar-wrap{
-//  margin-left: 1px;
-//  margin-right: 1px;
-//  border-radius: 10px;
-//  background-color: rgb(98 55 174);
-//}
+.chart-item {
+  min-width: 100px; /* Đặt chiều rộng tối thiểu cho các item */
+  height: 50px; /* Chiều cao của các item */
+  background-color: #007bff; /* Màu nền cho các item */
+  color: white; /* Màu chữ */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.3s; /* Hiệu ứng chuyển tiếp cho các phần tử */
+}
+
+.chart-item:hover {
+  transform: scale(1.1); /* Phóng to phần tử khi hover */
+}
+
+.bar-original{
+  //max-width: 8px;
+  min-width: 5px;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 10px 10px 0 0;
+}
+
+.bar-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 1px; /* Set left and right margins to 1px */
+  width: 5px; /* Minimum width */
+  border-radius: 3px 3px 0 0; /* Updated border radius */
+}
 
 .header h1 {
   font-size: 1.8rem;
@@ -296,7 +319,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-right: 7px;
+  margin-right: 4px;
   width: 10px;
 }
 
@@ -428,11 +451,11 @@
 /* Description Section */
 .description-section {
   //grid-column: 1 / 3;
-  max-width: 290px;
+  width: 100%;
   background: white;
   border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  //box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-top: 20px;
 }
 
@@ -472,16 +495,16 @@
     border-radius: 6px;
 
   }
-  .pe2{
-    padding: 5px;
-    height: 50%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    background-color: #e0f0ff;
-    border-radius: 6px;
-
-  }
+  //.pe2{
+  //  padding: 5px;
+  //  height: 50%;
+  //  width: 100%;
+  //  display: flex;
+  //  flex-direction: column;
+  //  background-color: #e0f0ff;
+  //  border-radius: 6px;
+  //
+  //}
 }
 
 .original-chart{
@@ -489,7 +512,7 @@
   min-height: 25%;
   width: 100%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  background-color: #b79eff;
+  //background-color: #b79eff;
   border-radius: 8px;
   display: flex;
   justify-content: center;
