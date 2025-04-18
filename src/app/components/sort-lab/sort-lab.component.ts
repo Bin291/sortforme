@@ -68,7 +68,7 @@ interface AlgorithmState {
 
   // Quick Sort uses original `steps` logic - no new state needed here for that specific implementation
 
-  // Shell Sort state (adapted)
+
   shellGap?: number; // Kept: Current gap value
   shellI?: number; // Kept: Outer loop index for the current gap ('i')
   shellJ?: number; // New: Inner loop index ('j')
@@ -77,7 +77,19 @@ interface AlgorithmState {
   // Radix Sort state
   radixDigit?: number; // Kept: Current digit multiplier (1, 10, 100...)
   maxNum?: number; // New: Maximum number in the array (for termination check)
+
 }
+interface Step {
+  action: string;
+  snapshot: number[];
+  low?: number;
+  high?: number;
+  i?: number;
+  j?: number;
+  pivotIndex?: number;
+  line: number;
+}
+
 
 
 @Component({
@@ -123,6 +135,12 @@ export class SortLabComponent implements OnInit, OnDestroy {
   @Output() stepChange = new EventEmitter<number>();
 
   @ViewChild('chart') chartComponent!: any; // Check if still needed with new structure
+  previousValues: number[] = [];
+
+  storePreviousValue(index: number): void {
+    this.previousValues[index] = this.numbers[index];
+  }
+
 
   // --- Holds the state for each active algorithm panel ---
   algorithmStates: AlgorithmState[] = [];
@@ -252,23 +270,6 @@ export class SortLabComponent implements OnInit, OnDestroy {
   }
 
 
-// getBarHeightOriginal(num: number, numbers: number[]): number {
-//   const containerHeight = 300; // Maximum height of the container
-//   const maxNumber = Math.max(...numbers); // Find the maximum number in the array
-//   const minHeight = 10; // Minimum bar height
-//   const calculatedHeight = (num / maxNumber) * containerHeight; // Scale height based on the container
-//   return Math.max(minHeight, calculatedHeight); // Ensure it doesn't go below the minimum height
-// }
-//
-// getBarWidthOriginal(numbers: number[]): number {
-//   const containerWidth = 225; // Maximum width of the container
-//   const numElements = numbers.length; // Number of elements
-//   const baseWidth = containerWidth / numElements; // Calculate width based on the container
-//   const maxWidth = 10; // Maximum bar width
-//   const minWidth = 5; // Minimum bar width
-//   return Math.max(minWidth, baseWidth); // Ensure it doesn't go below the minimum width
-// }
-
 
 
 
@@ -290,16 +291,19 @@ export class SortLabComponent implements OnInit, OnDestroy {
       this.reset();
     }
   }
-  checkEmptyOrInvalid(index: number) {
+  checkEmptyOrInvalid(index: number): void {
     const value = this.numbers[index];
-    if (value == null || isNaN(Number(value)) || !Number.isInteger(value) || Number(value) < 0) {
+    if (
+      value == null ||
+      isNaN(Number(value)) ||
+      !Number.isInteger(value) ||
+      Number(value) < 0
+    ) {
       alert('Please enter a non-negative integer.');
-      // Attempt to revert or remove invalid input
-      this.removeNumber(index); // Or revert to previous valid state if tracked
+      this.removeNumber(index);
     } else if (Number(value) > 1000) {
       alert('Input number cannot be greater than 1000!');
-      // Attempt to revert or remove invalid input
-      this.removeNumber(index); // Or revert to previous valid state if tracked
+      this.removeNumber(index);
     }
   }
 
@@ -308,15 +312,7 @@ export class SortLabComponent implements OnInit, OnDestroy {
     this.reset();
   }
 
-  // onInputChange(index: number): void {
-  //   if (this.numbers[index] == null) {
-  //     this.removeNumber(index);
-  //   }
-  // }
-  // randomize() {
-  //   this.numbers = Array.from({ length: 25 }, () => Math.floor(Math.random() * 20) + 1);
-  //   this.reset();
-  // }
+
   randomize() {
     const dialogRef = this.dialog.open(RandomDialogComponent, {
       width: '300px',
@@ -337,72 +333,132 @@ export class SortLabComponent implements OnInit, OnDestroy {
     this.reset();
   }
 
+  // reset() {
+  //   this.isPlaying = false;
+  //   // this.currentStep = 0; // Remove reliance on global currentStep
+  //   this.currentAction = '';
+  //   this.playButtonText = 'Play';
+  //   this.pauseButtonText = 'Pause';
+  //   this.isPaused = false; // Ensure pause state is reset
+  //   this.clearTimeout();
+  //   this.currentLineIndex = -1; // Reset highlight
+  //   this.stepChange.emit(this.currentLineIndex); // Emit reset highlight
+  //   this.clearTimeout();
+  //   this.algorithmStates = [];
+  //   this.previousStates = []; // Clear history
+  //
+  //   // Ensure numbers array has valid data before creating states
+  //   if (!this.numbers || this.numbers.length === 0) {
+  //     this.numbers = [1, 2, 10, 23, 12, 18, 9 , 20, 25, 6, 7]; // Default if empty
+  //   } else {
+  //     // Optional: Ensure all numbers are valid integers
+  //     this.numbers = this.numbers.map(n => Number.isInteger(n) && n >= 0 && n <= 1000 ? n : 0).filter(n => n !== null);
+  //   }
+  //   const createInitialState = (algoName: string): AlgorithmState => ({
+  //     name: algoName,
+  //     numbers: [...this.numbers],
+  //     currentStep: 0,
+  //     isFinished: false,
+  //     startTime: 0,
+  //     history: [], // Initialize history for backstep
+  //     initialized: false, // Ensure step function initializes state
+  //     compareIndices: undefined, // Ensure these are reset
+  //     swapIndices: undefined,
+  //     // Reset other specific fields
+  //     i: undefined, j: undefined, key: undefined, // Insertion
+  //     swappedInPass: undefined, // Bubble
+  //     minIndex: undefined, // Selection
+  //     shellGap: undefined, shellI: undefined, shellJ: undefined, shellTemp: undefined, // Shell
+  //     radixDigit: undefined, maxNum: undefined, // Radix
+  //     steps: (algoName === 'quick') ? this.generateQuickSortSteps([...this.numbers], 0, this.numbers.length - 1) : undefined,
+  //   });
+  //
+  //
+  //   if (this.mode === 'single') {
+  //     this.algorithmStates = [
+  //       { name: this.selectedAlgorithm, numbers: [...this.numbers], currentStep: 0, isFinished: false, startTime: 0 },
+  //     ];
+  //   } else if (this.mode === 'dual') {
+  //     this.algorithmStates = [
+  //       { name: this.selectedAlgorithm, numbers: [...this.numbers], currentStep: 0, isFinished: false, startTime: 0 },
+  //       { name: this.selectedAlgorithm2, numbers: [...this.numbers], currentStep: 0, isFinished: false, startTime: 0 },
+  //     ];
+  //   } else if (this.mode === 'all') {
+  //     this.algorithmStates = this.algorithms.map(algo => ({
+  //       name: algo,
+  //       numbers: [...this.numbers],
+  //       currentStep: 0,
+  //       isFinished: false,
+  //       startTime: 0,
+  //     }));
+  //   }
+  //
+  //   // Update description for single mode
+  //   if (this.mode === 'single') {
+  //     this.updateDescription();
+  //     this.currentPseudoCode = this.pseudoCodes[this.selectedAlgorithm] || [];
+  //   } else {
+  //     this.algorithmDescription = ''; // Clear description in multi modes maybe?
+  //     this.currentPseudoCode = []; // Clear pseudocode in multi modes
+  //   }
+  //
+  //   this.algorithmStates.forEach(state => {
+  //     if (state.name === 'quick') {
+  //       state.steps = this.generateQuickSortSteps([...state.numbers], 0, state.numbers.length - 1);
+  //     } else if (state.name === 'shell') {
+  //       state.shellGap = Math.floor(state.numbers.length / 2);
+  //       state.shellI = state.shellGap;
+  //     } else if (state.name === 'radix') {
+  //       state.radixDigit = 1;
+  //     }
+  //   });
+  //
+  // }
   reset() {
     this.isPlaying = false;
-    // this.currentStep = 0; // Remove reliance on global currentStep
+    // this.currentStep = 0;
     this.currentAction = '';
     this.playButtonText = 'Play';
     this.pauseButtonText = 'Pause';
-    this.isPaused = false; // Ensure pause state is reset
-    this.currentLineIndex = -1; // Reset highlight
-    this.stepChange.emit(this.currentLineIndex); // Emit reset highlight
-    this.clearTimeout();
+    this.clearTimeout(); // Hủy setTimeout khi reset
     this.algorithmStates = [];
-    this.previousStates = []; // Clear history
-
-    // Ensure numbers array has valid data before creating states
-    if (!this.numbers || this.numbers.length === 0) {
-      this.numbers = [1, 2, 10, 23, 12, 18, 9 , 20, 25, 6, 7]; // Default if empty
-    } else {
-      // Optional: Ensure all numbers are valid integers
-      this.numbers = this.numbers.map(n => Number.isInteger(n) && n >= 0 && n <= 1000 ? n : 0).filter(n => n !== null);
-    }
-    const createInitialState = (algoName: string): AlgorithmState => ({
-      name: algoName,
-      numbers: [...this.numbers],
-      currentStep: 0,
-      isFinished: false,
-      startTime: 0,
-      history: [], // Initialize history for backstep
-      initialized: false, // Ensure step function initializes state
-      compareIndices: undefined, // Ensure these are reset
-      swapIndices: undefined,
-      // Reset other specific fields
-      i: undefined, j: undefined, key: undefined, // Insertion
-      swappedInPass: undefined, // Bubble
-      minIndex: undefined, // Selection
-      shellGap: undefined, shellI: undefined, shellJ: undefined, shellTemp: undefined, // Shell
-      radixDigit: undefined, maxNum: undefined, // Radix
-      steps: (algoName === 'quick') ? this.generateQuickSortSteps([...this.numbers], 0, this.numbers.length - 1) : undefined,
-    });
-
 
     if (this.mode === 'single') {
-      this.algorithmStates = [createInitialState(this.selectedAlgorithm)];
+      this.algorithmStates = [
+        { name: this.selectedAlgorithm, numbers: [...this.numbers], currentStep: 0, isFinished: false, startTime: 0 },
+      ];
     } else if (this.mode === 'dual') {
       this.algorithmStates = [
-        createInitialState(this.selectedAlgorithm),
-        createInitialState(this.selectedAlgorithm2),
+        { name: this.selectedAlgorithm, numbers: [...this.numbers], currentStep: 0, isFinished: false, startTime: 0 },
+        { name: this.selectedAlgorithm2, numbers: [...this.numbers], currentStep: 0, isFinished: false, startTime: 0 },
       ];
     } else if (this.mode === 'all') {
-      this.algorithmStates = this.algorithms.map(algo => createInitialState(algo));
+      this.algorithmStates = this.algorithms.map(algo => ({
+        name: algo,
+        numbers: [...this.numbers],
+        currentStep: 0,
+        isFinished: false,
+        startTime: 0,
+      }));
     }
 
-    // Update description for single mode
-    if (this.mode === 'single') {
-      this.updateDescription();
-      this.currentPseudoCode = this.pseudoCodes[this.selectedAlgorithm] || [];
-    } else {
-      this.algorithmDescription = ''; // Clear description in multi modes maybe?
-      this.currentPseudoCode = []; // Clear pseudocode in multi modes
-    }
+    this.algorithmStates.forEach(state => {
+      if (state.name === 'quick') {
+        state.steps = this.generateQuickSortSteps([...state.numbers], 0, state.numbers.length - 1);
+      } else if (state.name === 'shell') {
+        state.shellGap = Math.floor(state.numbers.length / 2);
+        state.shellI = state.shellGap;
+      } else if (state.name === 'radix') {
+        state.radixDigit = 1;
+      }
+    });
   }
 
 
   submit() {
+    this.play();
     this.reset();
-    // Don't auto-play on submit, let user press play
-    // this.play();
+
   }
 
   play() {
@@ -681,84 +737,40 @@ export class SortLabComponent implements OnInit, OnDestroy {
           break;
 
         case 'quick':
-          let nextLineIndex = -1; // Đặt index dòng highlight thành -1 (hoàn thành)
-          // 1. Kiểm tra các điều kiện dừng hoặc lỗi ban đầu
-          if (state.isFinished) {
-            // Nếu đã được đánh dấu là hoàn thành, không làm gì cả
-            break;
-          }
-          if (nums.length <= 1) {
-            // Mảng quá nhỏ để sắp xếp
-            if (!state.isFinished) { // Đánh dấu hoàn thành nếu chưa
-              state.isFinished = true;
-              this.currentAction = "QuickSort: Mảng quá nhỏ để sắp xếp.";
-              nextLineIndex = -1; // Đặt index dòng highlight thành -1 (hoàn thành)
-            }
-            break;
-          }
-          if (!state.steps) {
-            // Lỗi: Các bước chưa được tạo (reset() có thể đã thất bại)
-            console.error("QuickSort steps không được tạo! Đang thử phục hồi.");
-            // Cố gắng tạo lại các bước một cách an toàn
-            state.steps = this.generateQuickSortSteps([...nums], 0, nums.length - 1);
-            if (!state.steps) { // Vẫn không có bước? Bỏ qua.
-              state.isFinished = true;
-              this.currentAction = "Lỗi khi tạo các bước QuickSort.";
-              nextLineIndex = -1;
-              break; // Thoát khỏi case 'quick'
-            }
-          }
-          // Nếu mảng bước trống (ví dụ: mảng đã được sắp xếp ban đầu)
-          if (state.steps.length === 0) {
-            if (!state.isFinished) {
-              state.isFinished = true;
-              this.currentAction = "QuickSort: Không cần bước nào (đã sắp xếp?).";
-              nextLineIndex = -1;
-            }
-            break;
-          }
+              if (!state.steps) {
+                state.steps = this.generateQuickSortSteps([...nums], 0, nums.length - 1);
+                if (!state.steps) {
+                  state.isFinished = true;
+                  this.currentAction = "Error generating QuickSort steps.";
+                  this.currentLineIndex = -1;
+                  break;
+                }
+              }
 
-          // 2. Thực hiện bước hoán đổi tiếp theo từ danh sách đã tính toán
-          if (state.currentStep < state.steps.length) {
-            // Lấy thông tin bước hiện tại
-            const step = state.steps[state.currentStep];
+              if (state.currentStep < state.steps.length) {
+                const step = state.steps[state.currentStep];
+                this.currentLineIndex = step.line ?? 2;
+                this.stepChange.emit(this.currentLineIndex);
 
-            // Đặt dòng code giả cần highlight (dựa trên thông tin trong step)
-            // Mặc định là dòng 2 (`pi = partition(...)`) nếu không có thông tin cụ thể
-            nextLineIndex = step.line ?? 2;
-            // Lưu ý: this.stepChange.emit() sẽ được gọi ở cuối hàm runAlgorithmStep
+                // Update the display array from the snapshot
+                if (step.snapshot) {
+                  this.numbers = [...step.snapshot];
+                }
 
-            // Thực hiện hoán đổi trên mảng `nums` thực tế
-            if (step.snapshot) {
-              this.numbers = [...step.snapshot];
-            }
+                state.swapIndices = [step.i, step.j];
+                this.currentAction = `QuickSort: Swapped ${step.snapshot?.[step.i]} and ${step.snapshot?.[step.j]}`;
+                state.currentStep++;
 
-            // Cập nhật trạng thái để trực quan hóa
-            state.swapIndices = [step.i, step.j]; // Highlight các thanh vừa hoán đổi
-            // Hiển thị hành động với giá trị *sau* khi hoán đổi
-            this.currentAction = `QuickSort: Hoán đổi ${nums[step.i]} và ${nums[step.j]}`;
+              } else {
+                if (!state.isFinished) {
+                  state.isFinished = true;
+                  state.swapIndices = undefined;
+                  this.currentAction = "QuickSort finished.";
+                  this.currentLineIndex = -1;
+                }
+              }
+              break;
 
-            // Tăng bộ đếm bước cho mảng steps (KHÔNG phải state.currentStep chung)
-            state.currentStep++; // Di chuyển đến bước tiếp theo trong danh sách steps
-
-            // Kiểm tra xem đây có phải là bước *cuối cùng* không
-            if (state.currentStep >= state.steps.length) {
-              state.isFinished = true;
-              this.currentAction = "QuickSort đã hoàn thành.";
-              // Có thể xóa highlight sau bước cuối cùng hoặc để nó hiển thị
-              // state.swapIndices = undefined;
-              nextLineIndex = -1; // Đánh dấu hoàn thành
-            }
-          } else {
-            // Nếu state.currentStep đã vượt quá độ dài steps nhưng chưa được đánh dấu hoàn thành
-            if (!state.isFinished) {
-              state.isFinished = true;
-              this.currentAction = "QuickSort đã hoàn thành (bước không nhất quán?).";
-              state.swapIndices = undefined; // Xóa highlight
-              nextLineIndex = -1;
-            }
-          }
-          break; // Kết thúc case 'quick'
         case 'shell':
           state.shellGap = Math.floor(nums.length / 2);
           if (state.shellGap > 0) {
@@ -945,32 +957,28 @@ export class SortLabComponent implements OnInit, OnDestroy {
         break;
 
       case 'quick':
-        // --- Using ORIGINAL QuickSort logic based on pre-generated steps ---
         if (!state.steps) {
-          // This should ideally not happen if reset() worked correctly
-          console.error("QuickSort steps not generated!");
           state.steps = this.generateQuickSortSteps([...nums], 0, nums.length - 1);
-          if (!state.steps) { // Still no steps? Abort.
+          if (!state.steps) {
             state.isFinished = true;
             this.currentAction = "Error generating QuickSort steps.";
             nextLineIndex = -1;
-            break; // Exit case 'quick'
+            break;
           }
         }
 
         if (state.currentStep < state.steps.length) {
           const step = state.steps[state.currentStep];
-          // Use the line index provided by the step generation, default to 2 (partitioning action)
           nextLineIndex = step.line ?? 2;
-          this.stepChange.emit(nextLineIndex); // Highlight line *before* action
+          this.stepChange.emit(nextLineIndex);
 
-          // Perform the swap from the pre-calculated step
-          [nums[step.i], nums[step.j]] = [nums[step.j], nums[step.i]]; // Corrected swap using i, j directly
+          if (step.snapshot) {
+            state.numbers = [...step.snapshot]; // <--- Cập nhật để hiển thị đúng biểu đồ
+          }
 
           state.swapIndices = [step.i, step.j];
-          // Use values *after* swap for description
-          this.currentAction = `QuickSort: Swapped ${nums[step.i]} and ${nums[step.j]}`;
-          state.currentStep++; // Increment the step counter for the pre-calculated steps
+          this.currentAction = `QuickSort: Swapped ${step.snapshot?.[step.i]} and ${step.snapshot?.[step.j]}`;
+          state.currentStep++;
 
         } else {
           if (!state.isFinished) {
@@ -980,7 +988,7 @@ export class SortLabComponent implements OnInit, OnDestroy {
             nextLineIndex = -1;
           }
         }
-        break; // End of original QuickSort case
+        break;
 
       case 'shell':
         // Adapted to use shellGap, shellI, shellJ, shellTemp
@@ -1023,7 +1031,6 @@ export class SortLabComponent implements OnInit, OnDestroy {
             }
           }
 
-          // Check if inner loop finished (i went past the end) OR if we finished shifting/inserting the current element
           if (state.shellI! >= nums.length) {
             // --- Finished pass for current gap, move to next gap ---
             nextLineIndex = 0; // Conceptually finishing the gap loop pass
@@ -1175,21 +1182,23 @@ export class SortLabComponent implements OnInit, OnDestroy {
   // --- QuickSort Step Generation (kept as is) ---
   generateQuickSortSteps(nums: number[], low: number, high: number): any[] {
     const steps: any[] = [];
-    const numsCopy = [...nums]; // Không làm thay đổi mảng gốc
-    this.quickSortSteps(numsCopy, low, high, steps);
+    const numsCopy = [...nums]; // tạo bản sao để không ảnh hưởng mảng gốc
+    this.quickSortSteps(numsCopy, 0, numsCopy.length - 1, steps);
     console.log("Steps:", steps);
     console.log("Final sorted array:", numsCopy);
+    console.log("Sorted:", numsCopy); // sẽ ra mảng đúng thứ tự
+    console.log("isSorted:", this.isSorted(numsCopy)); // true
+
     return steps;
   }
 
-  quickSortSteps(arr: number[], low: number, high: number, steps: any[]): void {
+  quickSortSteps(arr: number[], low: number, high: number, steps: Step[]): void {
     const stack: { low: number; high: number }[] = [];
     stack.push({ low, high });
 
     while (stack.length > 0) {
       const { low, high } = stack.pop()!;
       if (low < high) {
-        // Line 1: if low < high
         steps.push({
           action: 'recursive-call',
           low,
@@ -1200,20 +1209,20 @@ export class SortLabComponent implements OnInit, OnDestroy {
 
         const pi = this.partition(arr, low, high, steps);
 
-        // Push phần trái: low đến pi - 1
-        stack.push({ low: low, high: pi - 1 });
-
-        // Push phần phải: pi + 1 đến high
+        // Đẩy phần bên phải trước để phần bên trái được xử lý trước (giống đệ quy)
         stack.push({ low: pi + 1, high: high });
+        stack.push({ low: low, high: pi - 1 });
       }
     }
   }
+
+
+
 
   partition(arr: number[], low: number, high: number, steps: any[]): number {
     const pivot = arr[high];
     let i = low - 1;
 
-    // Line 2: chọn pivot
     steps.push({
       action: 'choose-pivot',
       pivotIndex: high,
@@ -1222,7 +1231,6 @@ export class SortLabComponent implements OnInit, OnDestroy {
     });
 
     for (let j = low; j < high; j++) {
-      // Line 3: so sánh arr[j] < pivot
       steps.push({
         action: 'compare',
         i,
@@ -1236,31 +1244,34 @@ export class SortLabComponent implements OnInit, OnDestroy {
         i++;
         [arr[i], arr[j]] = [arr[j], arr[i]];
 
-        // Line 4: hoán đổi nếu nhỏ hơn pivot
         steps.push({
           action: 'swap',
           i,
           j,
+          value1: arr[i],
+          value2: arr[j],
           snapshot: [...arr],
           line: 4
         });
+
       }
     }
 
-    // Đưa pivot về đúng vị trí
     [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
 
-    // Line 5: đổi pivot vào đúng vị trí
     steps.push({
       action: 'pivot-swap',
       i: i + 1,
       j: high,
+      value1: arr[i + 1],
+      value2: arr[high],
       snapshot: [...arr],
       line: 5
     });
 
+
     return i + 1;
-  }
+    }
 
 
   // --- formatSpeedLabel remains unchanged ---
@@ -1270,7 +1281,7 @@ export class SortLabComponent implements OnInit, OnDestroy {
 
   // --- getExecutionTime remains unchanged ---
   getExecutionTime(state: AlgorithmState): string {
-    if (!state.startTime) return 'N/A'; // Not started
+    if (!state.startTime) return '...'; // Not started
     if (!state.isFinished || !state.endTime) return 'Running...';
     const time = (state.endTime - state.startTime) / 1000;
     return `${time.toFixed(2)}s`;

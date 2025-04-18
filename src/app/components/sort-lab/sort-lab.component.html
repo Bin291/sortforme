@@ -68,8 +68,12 @@
           <input
             type="number"
             [(ngModel)]="numbers[i]"
+            name="number-{{ i }}"
+            (focus)="storePreviousValue(i)"
             (blur)="checkEmptyOrInvalid(i)"
           />
+
+
           <button mat-icon-button (click)="removeNumber(i)">
             <mat-icon>delete_outline</mat-icon>
           </button>
