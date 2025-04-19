@@ -68,8 +68,12 @@
           <input
             type="number"
             [(ngModel)]="numbers[i]"
+            name="number-{{ i }}"
+            (focus)="storePreviousValue(i)"
             (blur)="checkEmptyOrInvalid(i)"
           />
+
+
           <button mat-icon-button (click)="removeNumber(i)">
             <mat-icon>delete_outline</mat-icon>
           </button>
@@ -145,8 +149,8 @@
                     <div class="algorithm-overview">
                             <h3>Algorithm Overview</h3>
                             <p>{{ algorithmDescription }}</p>
-                            <h3>Input Data</h3>
-                            <p>{{ numbers.join(', ') }}</p>
+<!--                            <h3>Input Data</h3>-->
+<!--                            <p>{{ numbers.join(', ') }}</p>-->
                     </div>
                     <div class="current-actions">
                       <h3>Current Actions</h3>

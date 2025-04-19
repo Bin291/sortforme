@@ -454,7 +454,7 @@
   width: 100%;
   background: white;
   border-radius: 8px;
-  padding: 20px;
+  //padding: 10px;
   //box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-top: 20px;
 }
@@ -511,15 +511,13 @@
 .original-chart{
   padding: 5px;
   min-height: 25%;
-  width: 100%;
+  //width: 100%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   //background-color: #b79eff;
   border-radius: 8px;
   display: flex;
   justify-content: center;
-  align-items: flex-end;
-  overflow: hidden;
-  object-fit: contain;
+  //align-items: flex-end;
 
 
 }
