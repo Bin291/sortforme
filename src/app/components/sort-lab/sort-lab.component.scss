@@ -515,7 +515,6 @@
   display: flex;
   justify-content: center;
   //align-items: flex-end;
-
 }
 
 .algorithm-overview,
@@ -526,17 +525,17 @@
 .algorithm-overview h3,
 .current-actions h3 {
   font-size: 1rem;
-  margin-bottom: 10px;
+  //margin-bottom: 10px;
 }
 
 .current-actions p {
   color: #1a73e8;
   font-weight: bold;
 }
-p {
-    white-space: pre-wrap;
-    word-break: break-word;
-    flex: 1;
+.algorithm-overview p {
+  white-space: pre-wrap;
+  word-break: break-word;
+  flex: 1;
 }
 
 /* Footer */
