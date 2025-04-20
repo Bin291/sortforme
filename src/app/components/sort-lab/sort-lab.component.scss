@@ -485,16 +485,15 @@
   border-radius: 8px;
   padding: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  overflow-x: hidden;
   .pe1{
-    padding: 5px;
+    //padding: 5px;
     height: 50%;
     width: 100%;
     display: flex;
     flex-direction: column;
     background-color: #e0f0ff;
     border-radius: 6px;
-
   }
   //.pe2{
   //  padding: 5px;

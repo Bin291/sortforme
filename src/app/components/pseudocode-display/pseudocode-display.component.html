@@ -1,8 +1,9 @@
 <div class="pseudocode-container mat-elevation-z2">
   <ul>
     <li *ngFor="let line of pseudocodeLines; let i = index"
-        [class.highlight]="i === currentLine">
-      {{ line }}
+        [class.highlight]="i === currentLine"
+        class="pseudocode-line">
+      <code>{{ line }}</code>
     </li>
   </ul>
 </div>
