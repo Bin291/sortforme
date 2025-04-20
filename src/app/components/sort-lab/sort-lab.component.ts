@@ -267,11 +267,11 @@ export class SortLabComponent implements OnInit, OnDestroy {
       - Space: O(n + k)`,
 
     selection: `Description: A simple comparison-based algorithm that divides the array into a sorted and unsorted part, repeatedly selecting the minimum from the unsorted part and placing it at the beginning.
-    Steps
+  Steps
       1. Find the minimum element in the unsorted portion.
       2. Swap it with the first unsorted element.
       3. Move the sorted boundary one step to the right.
-     Complexity
+  Complexity
       - Time: Best/Average/Worst O(n²)
       - Space: O(1)`,
 
