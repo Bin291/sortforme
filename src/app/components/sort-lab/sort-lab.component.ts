@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy, Output, EventEmitter, ViewChild} from '@angular/core';
+import {Component, OnInit, OnDestroy, Output, EventEmitter, ViewChild, Input} from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
@@ -17,6 +17,7 @@ interface AlgorithmState {
   isFinished: boolean; // Kept: Flag indicating completion
   startTime: number; // Kept: For timing execution
   endTime?: number; // Kept: For timing execution
+  instructions?: string[]; // New: Pseudocode instructions for the current step
 
   steps?: any[];
   history?: { // Kept: Used by backStep logic
@@ -112,7 +113,7 @@ export class SortLabComponent implements OnInit, OnDestroy {
   selectedAlgorithm2: string = 'bubble';
   numbers: number[] = [1, 2, 10, 23, 12, 18, 9 , 20, 25, 6, 7];
   newNumber: number | null = null;
-  algorithmDescription: string = '';
+  @Input() algorithmDescription: string = '';
   speed: number = 1;
   isPlaying: boolean = false;
   // currentStep: number = 0; // This is now managed per-state, but keep perhaps for global display? Check template usage.
@@ -304,7 +305,36 @@ export class SortLabComponent implements OnInit, OnDestroy {
     return Math.max(minWidth, calculatedWidth);
   }
 
+  getCompactMaxHeight(numbers: number[]): number {
+    const maxValue = Math.max(...numbers, 1);
+    const maxHeight = 150; // Height of the div
+    const minHeightFactor = 2;
 
+    if (maxValue < 10) {
+      return (maxHeight / 10) * minHeightFactor;
+    }
+    const scaleFactor = maxHeight / Math.min(maxValue, 1000);
+    return scaleFactor;
+  }
+
+  getCompactBarHeight(num: number, numbers: number[]): number {
+    const minHeight = 5; // Smaller minimum height for compact view
+    const calculatedHeight = num * this.getCompactMaxHeight(numbers);
+    return Math.max(minHeight, calculatedHeight);
+  }
+
+  getCompactBarWidth(numbers: number[]): number {
+    const baseWidth = 10; // Adjusted for compact view
+    const minWidth = 5; // Smaller minimum width for compact view
+    const maxElements = 30; // Fewer elements for compact view
+    const numElements = numbers.length;
+
+    let calculatedWidth = baseWidth;
+    if (numElements > maxElements) {
+      calculatedWidth = baseWidth * (maxElements / numElements);
+    }
+    return Math.max(minWidth, calculatedWidth);
+  }
 
 
 
@@ -460,7 +490,8 @@ export class SortLabComponent implements OnInit, OnDestroy {
 
     if (this.mode === 'single') {
       this.algorithmStates = [
-        { name: this.selectedAlgorithm, numbers: [...this.numbers], currentStep: 0, isFinished: false, startTime: 0 },
+        { name: this.selectedAlgorithm, numbers: [...this.numbers], currentStep: 0, isFinished: false, startTime: 0, instructions: [...this.updateDescription()]},
+
       ];
     } else if (this.mode === 'dual') {
       this.algorithmStates = [
@@ -630,14 +661,13 @@ export class SortLabComponent implements OnInit, OnDestroy {
     }
   }
 
-  // --- Description Update remains unchanged ---
-  updateDescription() {
-    this.algorithmDescription = this.algorithmDescriptions[this.selectedAlgorithm] || 'Select an algorithm to see its description.';
+  updateDescription(): string[] {
+    this.algorithmDescription = this.algorithmDescriptions[this.selectedAlgorithm] || ' ';
     this.currentPseudoCode = this.pseudoCodes[this.selectedAlgorithm] || [];
-    this.currentLineIndex = -1; // Reset highlight when changing algorithm
+    this.currentLineIndex = -1;
     this.stepChange.emit(this.currentLineIndex);
+    return this.currentPseudoCode;
   }
-
   // --- Bar Color Logic (uses compareIndices now too) ---
   getBarColor(index: number, state: AlgorithmState): string {
     if (state.isFinished) {
