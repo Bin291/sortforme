@@ -152,56 +152,70 @@ export class SortLabComponent implements OnInit, OnDestroy {
   // --- Pseudocode remains the same ---
   pseudoCodes: { [key: string]: string[] } = {
     bubble: [
-      'for i from 0 to n-1',          // 0
-      '  for j from 0 to n-i-1',      // 1
-      '    if arr[j] > arr[j+1]',     // 2
-      '      swap(arr[j], arr[j+1])'  // 3
+      'for (int i = 0; i < n - 1; i++) {',
+      '  for (int j = 0; j < n - i - 1; j++) {',
+      '    if (arr[j] > arr[j + 1]) {',
+      '      swap(arr[j], arr[j + 1]);',
+      '    }',
+      '  }',
+      '}'
     ],
 
     selection: [
-      'for i from 0 to n-1',              // 0
-      '  minIndex = i',                   // 1
-      '  for j from i+1 to n-1',          // 2
-      '    if arr[j] < arr[minIndex]',    // 3
-      '      minIndex = j',              // 4
-      '  swap(arr[i], arr[minIndex])'    // 5
+      'for (int i = 0; i < n - 1; i++) {',
+      '  int minIndex = i;',
+      '  for (int j = i + 1; j < n; j++) {',
+      '    if (arr[j] < arr[minIndex]) {',
+      '      minIndex = j;',
+      '    }',
+      '  }',
+      '  swap(arr[i], arr[minIndex]);',
+      '}'
     ],
 
     insertion: [
-      'for i from 1 to n-1',                        // 0
-      '  key = arr[i]',                             // 1
-      '  j = i - 1',                                 // 2
-      '  while j >= 0 and arr[j] > key',            // 3
-      '    arr[j + 1] = arr[j]',                    // 4
-      '    j = j - 1',                              // 5
-      '  arr[j + 1] = key'                          // 6
+      'for (int i = 1; i < n; i++) {',
+      '  int key = arr[i];',
+      '  int j = i - 1;',
+      '  while (j >= 0 && arr[j] > key) {',
+      '    arr[j + 1] = arr[j];',
+      '    j--;',
+      '  }',
+      '  arr[j + 1] = key;',
+      '}'
     ],
 
     quick: [
-      'quickSort(arr, low, high)',                 // 0
-      '  if low < high',                           // 1
-      '    pi = partition(arr, low, high)',        // 2
-      '    quickSort(arr, low, pi - 1)',           // 3
-      '    quickSort(arr, pi + 1, high)'           // 4
+      'void quickSort(int arr[], int low, int high) {',
+      '  if (low < high) {',
+      '    int pi = partition(arr, low, high);',
+      '    quickSort(arr, low, pi - 1);',
+      '    quickSort(arr, pi + 1, high);',
+      '  }',
+      '}'
     ],
 
     shell: [
-      'for gap = n/2 down to 1',                      // 0
-      '  for i = gap to n-1',                         // 1
-      '    temp = arr[i]',                            // 2
-      '    j = i',                                    // 3
-      '    while j >= gap and arr[j - gap] > temp',   // 4
-      '      arr[j] = arr[j - gap]',                  // 5
-      '      j = j - gap',                            // 6
-      '    arr[j] = temp'                             // 7
+      'for (int gap = n / 2; gap > 0; gap /= 2) {',
+      '  for (int i = gap; i < n; i++) {',
+      '    int temp = arr[i];',
+      '    int j;',
+      '    for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {',
+      '      arr[j] = arr[j - gap];',
+      '    }',
+      '    arr[j] = temp;',
+      '  }',
+      '}'
     ],
 
     radix: [
-      'getMax(arr, n)',                   // 0
-      'for exp = 1; max/exp > 0; exp *= 10', // 1
-      '  countSort(arr, n, exp)'          // 2
+      'int max = getMax(arr, n);',
+      'for (int exp = 1; max / exp > 0; exp *= 10) {',
+      '  countSort(arr, n, exp);',
+      '}'
     ]
   };
+
 
 
 
