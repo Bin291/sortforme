@@ -308,7 +308,7 @@ export class SortLabComponent implements OnInit, OnDestroy {
 
   getCompactMaxHeight(numbers: number[]): number {
     const maxValue = Math.max(...numbers, 1);
-    const maxHeight = 200; // Height of the div
+    const maxHeight = 150; // Height of the div
     const minHeightFactor = 2;
 
     if (maxValue < 10) {
