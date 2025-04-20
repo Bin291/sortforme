@@ -233,7 +233,6 @@ export class SortLabComponent implements OnInit, OnDestroy {
     - Space Complexity: O(1)`,
 
 
-
     shell: `1. Start with a large gap, compare elements far apart\n
 2. Reduce the gap and repeat comparisons (insertion sort on gapped elements)\n
 3. Finish with gap = 1 (standard insertion sort on nearly sorted array)
