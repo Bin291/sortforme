@@ -10,6 +10,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {RandomDialogComponent} from '../random-dialog/random-dialog.component';
 import {CodeHighlightComponent} from '../code-highlight/code-highlight.component';
 import {SortingChartComponent} from '../sorting-chart/sorting-chart.component';
+import {MatInput} from '@angular/material/input';
 interface AlgorithmState {
   name: string; // Kept: e.g., 'insertion', 'bubble'
   numbers: number[]; // Kept: The array being sorted
@@ -104,6 +105,7 @@ interface Step {
     NgIf,
     CodeHighlightComponent,
     SortingChartComponent,
+    MatInput,
   ],
 })
 
@@ -251,7 +253,14 @@ export class SortLabComponent implements OnInit, OnDestroy {
 2. Swap it with the first element of the unsorted portion
 3. Move the boundary of the sorted portion one step to the right
 - Time Complexity: O(n^2) in all cases
-- Space Complexity: O(1)`
+- Space Complexity: O(1)`,
+
+    quick: `1. Choose a pivot element from the array
+2. Partition the array into two halves: elements less than the pivot and elements greater than the pivot
+3. Recursively apply the same logic to the two halves
+- Time Complexity: Best O(n log n), Average O(n log n), Worst O(n^2)
+- Space Complexity: O(log n) for recursive stack space`,
+
   };
 
 

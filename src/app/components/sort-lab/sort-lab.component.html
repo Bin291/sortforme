@@ -16,28 +16,10 @@
       <button mat-raised-button [color]="mode === 'all' ? 'primary' : ''" (click)="setMode('all')">6 Algo</button>
     </div>
   </header>
-
   <!-- Main Content -->
   <div class="main-content">
     <!-- Input Section -->
-
-
     <section class="input-section">
-<!--      <div class="original-chart" *ngIf="mode === 'single'">-->
-<!--        <div class="bar-cuong">-->
-<!--          <div *ngFor="let num of numbers" class="bar-original">-->
-<!--            <div-->
-<!--              class="bar-wrap"-->
-<!--              [style.height.px]="getBarHeightOriginal(num, numbers)"-->
-<!--              [style.width.px]="getBarWidthOriginal(numbers)"-->
-<!--              [style.backgroundColor]="'rgb(98 55 174)'"-->
-<!--            ></div>-->
-<!--            <div class="bar-label">{{ num }}</div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
-
-
             <div class="original-chart" *ngIf="mode === 'single'">
                 <div>
                     <div class="bar-cuong">
@@ -51,21 +33,12 @@
                             <div class="bar-label">{{ num }}</div>
                         </div>
                     </div>
-
                 </div>
             </div>
-
-
       <h2>Input Data</h2>
-<!--      <div class="input-list">-->
-<!--        <div *ngFor="let num of numbers; let i = index" class="input-item">-->
-<!--          <input type="number" [(ngModel)]="numbers[i]" />-->
-<!--          <button mat-icon-button (click)="removeNumber(i)"><mat-icon>delete_outline</mat-icon></button>-->
-<!--        </div>-->
-<!--      </div>-->
       <div class="input-list">
         <div *ngFor="let num of numbers; let i = index" class="input-item">
-          <input
+          <input  matInput
             type="number"
             [(ngModel)]="numbers[i]"
             name="number-{{ i }}"
