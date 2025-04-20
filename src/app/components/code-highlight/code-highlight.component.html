@@ -1,7 +1,10 @@
-<div
-  *ngFor="let line of codeLines; let i = index"
-  [class.highlighted]="i === activeLine"
-  class="code-line"
->
-  {{ line }}
+<div class="code-block">
+  <div
+    *ngFor="let line of codeLines; let i = index"
+    [class.highlighted]="i === activeLine"
+    class="code-line"
+  >
+    <span class="line-number">{{ i + 1 }}</span>
+    <span class="line-content">{{ line }}</span>
+  </div>
 </div>

@@ -44,8 +44,8 @@
                         <div *ngFor="let num of numbers" class="bar-original">
                             <div
                                 class="bar-wrap"
-                                [style.height.px]="getBarHeight(num, numbers)"
-                                [style.width.px]="getBarWidth(numbers)"
+                                [style.height.px]="getCompactBarHeight(num, numbers)"
+                                [style.width.px]="getCompactBarWidth(numbers)"
                                 [style.backgroundColor]="'rgb(98 55 174)'"
                             ></div>
                             <div class="bar-label">{{ num }}</div>
@@ -160,6 +160,14 @@
           </div>
             </div>
       </div>
+
+
+
+      <!-- Gắn component pseudo-code-iewer ở đây -->
+
+
+
+
       <section class="control-section">
         <div class="controls">
           <button mat-raised-button color="primary" (click)="play()">{{ playButtonText }}</button>

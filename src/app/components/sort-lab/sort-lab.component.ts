@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy, Output, EventEmitter, ViewChild} from '@angular/core';
+import {Component, OnInit, OnDestroy, Output, EventEmitter, ViewChild, Input} from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
@@ -17,6 +17,7 @@ interface AlgorithmState {
   isFinished: boolean; // Kept: Flag indicating completion
   startTime: number; // Kept: For timing execution
   endTime?: number; // Kept: For timing execution
+  instructions?: string[]; // New: Pseudocode instructions for the current step
 
   steps?: any[];
   history?: { // Kept: Used by backStep logic
@@ -112,7 +113,7 @@ export class SortLabComponent implements OnInit, OnDestroy {
   selectedAlgorithm2: string = 'bubble';
   numbers: number[] = [1, 2, 10, 23, 12, 18, 9 , 20, 25, 6, 7];
   newNumber: number | null = null;
-  algorithmDescription: string = '';
+  @Input() algorithmDescription: string = '';
   speed: number = 1;
   isPlaying: boolean = false;
   // currentStep: number = 0; // This is now managed per-state, but keep perhaps for global display? Check template usage.
@@ -152,56 +153,70 @@ export class SortLabComponent implements OnInit, OnDestroy {
   // --- Pseudocode remains the same ---
   pseudoCodes: { [key: string]: string[] } = {
     bubble: [
-      'for i from 0 to n-1',          // 0
-      '  for j from 0 to n-i-1',      // 1
-      '    if arr[j] > arr[j+1]',     // 2
-      '      swap(arr[j], arr[j+1])'  // 3
+      'for (int i = 0; i < n - 1; i++) {',
+      '  for (int j = 0; j < n - i - 1; j++) {',
+      '    if (arr[j] > arr[j + 1]) {',
+      '      swap(arr[j], arr[j + 1]);',
+      '    }',
+      '  }',
+      '}'
     ],
 
     selection: [
-      'for i from 0 to n-1',              // 0
-      '  minIndex = i',                   // 1
-      '  for j from i+1 to n-1',          // 2
-      '    if arr[j] < arr[minIndex]',    // 3
-      '      minIndex = j',              // 4
-      '  swap(arr[i], arr[minIndex])'    // 5
+      'for (int i = 0; i < n - 1; i++) {',
+      '  int minIndex = i;',
+      '  for (int j = i + 1; j < n; j++) {',
+      '    if (arr[j] < arr[minIndex]) {',
+      '      minIndex = j;',
+      '    }',
+      '  }',
+      '  swap(arr[i], arr[minIndex]);',
+      '}'
     ],
 
     insertion: [
-      'for i from 1 to n-1',                        // 0
-      '  key = arr[i]',                             // 1
-      '  j = i - 1',                                 // 2
-      '  while j >= 0 and arr[j] > key',            // 3
-      '    arr[j + 1] = arr[j]',                    // 4
-      '    j = j - 1',                              // 5
-      '  arr[j + 1] = key'                          // 6
+      'for (int i = 1; i < n; i++) {',
+      '  int key = arr[i];',
+      '  int j = i - 1;',
+      '  while (j >= 0 && arr[j] > key) {',
+      '    arr[j + 1] = arr[j];',
+      '    j--;',
+      '  }',
+      '  arr[j + 1] = key;',
+      '}'
     ],
 
     quick: [
-      'quickSort(arr, low, high)',                 // 0
-      '  if low < high',                           // 1
-      '    pi = partition(arr, low, high)',        // 2
-      '    quickSort(arr, low, pi - 1)',           // 3
-      '    quickSort(arr, pi + 1, high)'           // 4
+      'void quickSort(int arr[], int low, int high) {',
+      '  if (low < high) {',
+      '    int pi = partition(arr, low, high);',
+      '    quickSort(arr, low, pi - 1);',
+      '    quickSort(arr, pi + 1, high);',
+      '  }',
+      '}'
     ],
 
     shell: [
-      'for gap = n/2 down to 1',                      // 0
-      '  for i = gap to n-1',                         // 1
-      '    temp = arr[i]',                            // 2
-      '    j = i',                                    // 3
-      '    while j >= gap and arr[j - gap] > temp',   // 4
-      '      arr[j] = arr[j - gap]',                  // 5
-      '      j = j - gap',                            // 6
-      '    arr[j] = temp'                             // 7
+      'for (int gap = n / 2; gap > 0; gap /= 2) {',
+      '  for (int i = gap; i < n; i++) {',
+      '    int temp = arr[i];',
+      '    int j;',
+      '    for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {',
+      '      arr[j] = arr[j - gap];',
+      '    }',
+      '    arr[j] = temp;',
+      '  }',
+      '}'
     ],
 
     radix: [
-      'getMax(arr, n)',                   // 0
-      'for exp = 1; max/exp > 0; exp *= 10', // 1
-      '  countSort(arr, n, exp)'          // 2
+      'int max = getMax(arr, n);',
+      'for (int exp = 1; max / exp > 0; exp *= 10) {',
+      '  countSort(arr, n, exp);',
+      '}'
     ]
   };
+
 
 
 
@@ -291,7 +306,36 @@ export class SortLabComponent implements OnInit, OnDestroy {
     return Math.max(minWidth, calculatedWidth);
   }
 
+  getCompactMaxHeight(numbers: number[]): number {
+    const maxValue = Math.max(...numbers, 1);
+    const maxHeight = 200; // Height of the div
+    const minHeightFactor = 2;
 
+    if (maxValue < 10) {
+      return (maxHeight / 10) * minHeightFactor;
+    }
+    const scaleFactor = maxHeight / Math.min(maxValue, 1000);
+    return scaleFactor;
+  }
+
+  getCompactBarHeight(num: number, numbers: number[]): number {
+    const minHeight = 5; // Smaller minimum height for compact view
+    const calculatedHeight = num * this.getCompactMaxHeight(numbers);
+    return Math.max(minHeight, calculatedHeight);
+  }
+
+  getCompactBarWidth(numbers: number[]): number {
+    const baseWidth = 10; // Adjusted for compact view
+    const minWidth = 5; // Smaller minimum width for compact view
+    const maxElements = 30; // Fewer elements for compact view
+    const numElements = numbers.length;
+
+    let calculatedWidth = baseWidth;
+    if (numElements > maxElements) {
+      calculatedWidth = baseWidth * (maxElements / numElements);
+    }
+    return Math.max(minWidth, calculatedWidth);
+  }
 
 
 
@@ -447,7 +491,8 @@ export class SortLabComponent implements OnInit, OnDestroy {
 
     if (this.mode === 'single') {
       this.algorithmStates = [
-        { name: this.selectedAlgorithm, numbers: [...this.numbers], currentStep: 0, isFinished: false, startTime: 0 },
+        { name: this.selectedAlgorithm, numbers: [...this.numbers], currentStep: 0, isFinished: false, startTime: 0, instructions: [...this.updateDescription()]},
+
       ];
     } else if (this.mode === 'dual') {
       this.algorithmStates = [
@@ -617,14 +662,13 @@ export class SortLabComponent implements OnInit, OnDestroy {
     }
   }
 
-  // --- Description Update remains unchanged ---
-  updateDescription() {
-    this.algorithmDescription = this.algorithmDescriptions[this.selectedAlgorithm] || 'Select an algorithm to see its description.';
+  updateDescription(): string[] {
+    this.algorithmDescription = this.algorithmDescriptions[this.selectedAlgorithm] || ' ';
     this.currentPseudoCode = this.pseudoCodes[this.selectedAlgorithm] || [];
-    this.currentLineIndex = -1; // Reset highlight when changing algorithm
+    this.currentLineIndex = -1;
     this.stepChange.emit(this.currentLineIndex);
+    return this.currentPseudoCode;
   }
-
   // --- Bar Color Logic (uses compareIndices now too) ---
   getBarColor(index: number, state: AlgorithmState): string {
     if (state.isFinished) {
