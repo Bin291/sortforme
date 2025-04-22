@@ -396,14 +396,14 @@ Complexity
     if (this.newNumber !== null) {
       // Không cho phép thêm số âm hoặc số 0
       if (this.newNumber <= 0) {
-        alert('Chỉ được thêm số nguyên dương lớn hơn 0!');
+        alert('Only positive integers greater than 0 can be added!');
         this.newNumber = null;
         return;
       }
 
       // Kiểm tra giới hạn số lớn hơn 1000
       if (this.newNumber > 1000) {
-        alert('Số nhập vào không được lớn hơn 1000!');
+        alert('The number entered cannot be greater than 1000!');
         this.newNumber = null;
         return;
       }
@@ -689,13 +689,26 @@ Complexity
   // --- Pause/Resume logic remains unchanged ---
   isPaused = false;
 
+  // togglePause() {
+  //   if (!this.isPlaying && !this.isPaused) return; // Do nothing if not playing or already paused
+  //
+  //   this.isPaused = !this.isPaused;
+  //   if (this.isPaused) {
+  //     this.pauseSorting();
+  //   } else {
+  //     this.resumeSorting();
+  //   }
+  // }
   togglePause() {
-    if (!this.isPlaying && !this.isPaused) return;
-
-    this.isPaused = !this.isPaused;
-    if (this.isPaused) {
-      this.pauseSorting();
-    } else {
+    if (this.isPlaying) {
+      // Đang chạy -> thì pause
+      this.isPaused = true;
+      this.isPlaying = false;
+      this.playButtonText = 'Resume'; // Đổi nút thành Resume
+      this.pauseButtonText = 'Paused'; // Cho biết đã dừng
+      this.currentAction = 'Sorting paused.';
+    } else if (this.isPaused) {
+      // Nếu đang bị pause → resume lại
       this.resumeSorting();
     }
   }
@@ -714,12 +727,12 @@ Complexity
 
     this.isPlaying = true;
     this.isPaused = false;
-    this.playButtonText = 'Playing...'; // Indicate it's running
-    this.pauseButtonText = 'Pause'; // Indicate pausing action is available
+    this.playButtonText = 'Playing...';
+    this.pauseButtonText = 'Pause';
     this.currentAction = 'Sorting resumed!';
-    this.runAlgorithms(); // Continue the loop
-
+    this.runAlgorithms(); // tiếp tục thực thi sorting step
   }
+
 
   // --- Step Forward/Backward Logic (Adjusted for AlgorithmState[][]) ---
   nextStep() {
