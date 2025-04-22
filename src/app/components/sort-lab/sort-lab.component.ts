@@ -103,8 +103,7 @@ interface Step {
     NgClass,
     NgIf,
     CodeHighlightComponent,
-    SortingChartComponent,
-  ],
+    SortingChartComponent,],
 })
 
 export class SortLabComponent implements OnInit, OnDestroy {
@@ -649,7 +648,7 @@ Complexity
     this.isPlaying = true;
     this.isPaused = false;
     this.playButtonText = 'Playing...';
-    this.pauseButtonText = 'Pause'; // Set pause button text correctly
+    this.pauseButtonText = 'Pause';
     this.currentAction = 'Sorting started!';
     // Record start time only if not already started/resumed
     this.algorithmStates.forEach(state => {
@@ -662,7 +661,7 @@ Complexity
   isPaused = false;
 
   togglePause() {
-    if (!this.isPlaying && !this.isPaused) return; // Do nothing if not playing or already paused
+    if (!this.isPlaying && !this.isPaused) return;
 
     this.isPaused = !this.isPaused;
     if (this.isPaused) {
@@ -682,7 +681,7 @@ Complexity
   }
 
   resumeSorting() {
-    if (!this.isPaused) return; // Should not happen if called from togglePause
+    if (!this.isPaused) return;
 
     this.isPlaying = true;
     this.isPaused = false;
@@ -690,6 +689,7 @@ Complexity
     this.pauseButtonText = 'Pause'; // Indicate pausing action is available
     this.currentAction = 'Sorting resumed!';
     this.runAlgorithms(); // Continue the loop
+
   }
 
   // --- Step Forward/Backward Logic (Adjusted for AlgorithmState[][]) ---
@@ -708,6 +708,7 @@ Complexity
         // Update global line index if in single mode for code highlight
         if (this.mode === 'single') {
           // this.currentLineIndex is updated inside runAlgorithmStep via this.stepChange.emit
+
         }
       }
     });
@@ -737,20 +738,22 @@ Complexity
 
     const previousSnapshot = this.previousStates.pop();
     if (previousSnapshot) {
-      // Restore the entire array of states
+
       this.algorithmStates = JSON.parse(JSON.stringify(previousSnapshot));
       this.currentAction = 'Stepped back';
       // Update highlight based on the restored state(s)
       if (this.mode === 'single' && this.algorithmStates.length > 0) {
         this.currentLineIndex = -1; // Reset highlight
         this.stepChange.emit(this.currentLineIndex);
-
-        // If the history object stored more details, we could restore precisely:
-        // const singleState = this.algorithmStates[0];
-        // const lastHistoryEntry = singleState.history?.[singleState.history.length - 1];
-        // this.currentLineIndex = lastHistoryEntry?.currentLineIndex ?? -1; // Assuming currentLineIndex was saved
-        // this.stepChange.emit(this.currentLineIndex);
       }
+      this.algorithmStates.forEach(state => {
+        state.isFinished = false; // Reset finished state
+        state.currentStep = 0; // Reset step for each algorithm
+        state.swapIndices = undefined; // Clear swap highlight
+        state.compareIndices = undefined; // Clear compare highlight
+        // Reset other specific fields if needed
+      });
+      this.currentAction = 'Stepped back';
     }
   }
 

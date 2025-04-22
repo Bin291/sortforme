@@ -154,8 +154,8 @@
           </button>
 
           <button mat-raised-button color="warn" (click)="reset()">Reset</button>
-          <button mat-raised-button (click)="backStep()" [disabled]="!canGoBack()">Back Step</button>
-          <button mat-raised-button (click)="nextStep()">Next Step</button>
+          <button mat-raised-button *ngIf="mode === 'single'" (click)="backStep()" [disabled]="!canGoBack()">Back Step</button>
+          <button mat-raised-button *ngIf="mode === 'single'" (click)="nextStep()">Next Step</button>
 
           <div class="speed-control">
             <span>Speed:</span>
