@@ -184,6 +184,7 @@
   color: white;
 }
 
+
 /* Visualization Section */
 .visualization-section {
   flex: 2;
@@ -490,7 +491,7 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    background-color: #e0f0ff;
+    background-color: #F5F5F5;
     border-radius: 6px;
   }
   //.pe2{
@@ -514,7 +515,7 @@
   border-radius: 8px;
   display: flex;
   justify-content: center;
-  //align-items: flex-end;
+  align-items: flex-end;
 
 
 }

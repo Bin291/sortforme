@@ -10,7 +10,6 @@ import {MatDialog} from '@angular/material/dialog';
 import {RandomDialogComponent} from '../random-dialog/random-dialog.component';
 import {CodeHighlightComponent} from '../code-highlight/code-highlight.component';
 import {SortingChartComponent} from '../sorting-chart/sorting-chart.component';
-import {MatInput} from '@angular/material/input';
 interface AlgorithmState {
   name: string; // Kept: e.g., 'insertion', 'bubble'
   numbers: number[]; // Kept: The array being sorted
@@ -105,7 +104,6 @@ interface Step {
     NgIf,
     CodeHighlightComponent,
     SortingChartComponent,
-    MatInput,
   ],
 })
 
@@ -127,7 +125,7 @@ export class SortLabComponent implements OnInit, OnDestroy {
   currentAction: string = '';
   currentPseudoCode: string[] = [];
   currentLineIndex = -1; // Use -1 for no highlight initially
-
+  inputValues: string[] = [];
 
   @Output() stepChange = new EventEmitter<number>();
 
@@ -223,43 +221,71 @@ export class SortLabComponent implements OnInit, OnDestroy {
 
 
   algorithmDescriptions: { [key: string]: string } = {
-    insertion: `1. Iterate through the array, starting from the second element\n
-2. For each element, compare it with the elements to its left\n
-3. Insert the element in the correct position in the sorted portion\n
-- Time Complexity: Best O(n), Average/Worst O(n^2)\n
-- Space Complexity: O(1)`,
+    insertion: `Description: A simple sorting algorithm that builds the final sorted array one element at a time by inserting each element into its correct position of the array.
 
-    bubble: `'1. Iterate through the array multiple times' \n\
-    2. Compare adjacent elements and swap if they are in the wrong order \n\
-    3. Repeat until no swaps are needed \n\
-    - Time Complexity: Best O(n), Average/Worst O(n^2) \n\
-    - Space Complexity: O(1)`,
+Steps
+  1. Start from the second element in the array.
+  2. Compare it with the elements to its left.
+  3. Shift larger elements to the right and insert the current element intoitsts correct position.
 
+Complexity
+  - Time: Best 0(n), Average/Worst O(n²)
+  - Space: O(1)`,
 
+    bubble: `Description: A basic sorting algorithm that repeatedly steps through the list, compares adjacent elements, and swaps them if they are in the wrong order.
 
-    shell: `1. Start with a large gap, compare elements far apart\n
-2. Reduce the gap and repeat comparisons (insertion sort on gapped elements)\n
-3. Finish with gap = 1 (standard insertion sort on nearly sorted array)
-- Time Complexity: Depends on gap sequence, typically between O(n) and O(n^2)
-- Space Complexity: O(1)`,
+Steps
+  1. Traverse the array multiple times.
+  2. Compare each pair of adjacent elements.
+  3. Swap if needed, and repeat until no swaps are required.
 
-    radix: `1. Sort numbers based on least significant digit using a stable sort (counting sort)
-2. Move to the next significant digit and repeat the stable sort
-3. Continue until the most significant digit is processed
-- Time Complexity: O(nk), where k is the number of digits
-- Space Complexity: O(n + k)`,
+Complexity
+  - Time: Best O(n), Average/Worst O(n²)
+  - Space: O(1)`,
 
-    selection: `1. Find the minimum element in the unsorted portion
-2. Swap it with the first element of the unsorted portion
-3. Move the boundary of the sorted portion one step to the right
-- Time Complexity: O(n^2) in all cases
-- Space Complexity: O(1)`,
+    quick: `Description: A highly efficient divide-and-conquer sorting algorithm that partitions the array into subarrays based on a pivot and recursively sorts the subarrays.
 
-    quick: `1. Choose a pivot element from the array
-2. Partition the array into two halves: elements less than the pivot and elements greater than the pivot
-3. Recursively apply the same logic to the two halves
-- Time Complexity: Best O(n log n), Average O(n log n), Worst O(n^2)
-- Space Complexity: O(log n) for recursive stack space`,
+Steps
+  1. Choose a pivot element from the array.
+  2. Partition the array into two parts: elements less than the pivot and greater than the pivot.
+  3. Recursively apply the same steps to the subarrays.
+
+Complexity
+  - Time: Best/Average O(n log n), Worst O(n²)
+  - Space: O(log n) (for recursion stack)`,
+
+    shell: `Description: An optimization of insertion sort that starts by comparing elements far apart and gradually reduces the gap between elements to be compared.
+
+Steps
+  1. Choose a large initial gap between elements.
+  2. Use insertion sort on elements that are 'gap' apart.
+  3. Gradually reduce the gap until it becomes 1.
+
+Complexity
+  - Time: Depends on the gap sequence; typically between O(n) and O(n²)
+  - Space: O(1)`,
+
+    radix: `Description: A non-comparative sorting algorithm that sorts numbers digit by digit, starting from the least significant digit using a stable sorting algorithm such as counting sort.
+
+Steps
+  1. Sort elements based on the least significant digit.
+  2. Move to the next digit and repeat using a stable sort.
+  3. Continue until the most significant digit is sorted.
+
+Complexity
+  - Time: O(nk), where k is the number of digits
+  - Space: O(n + k)`,
+
+    selection: `Description: A simple comparison-based algorithm that divides the array into a sorted and unsorted part, repeatedly selecting the minimum from the unsorted part and placing it at the beginning.
+
+Steps
+  1. Find the minimum element in the unsorted portion.
+  2. Swap it with the first unsorted element.
+  3. Move the sorted boundary one step to the right.
+
+Complexity
+  - Time: Best/Average/Worst O(n²)
+  - Space: O(1)`,
 
   };
 
@@ -271,6 +297,7 @@ export class SortLabComponent implements OnInit, OnDestroy {
     this.mode = savedMode || 'single';
     this.updateDescription();
     this.reset();
+    this.inputValues = this.numbers.map(n => n.toString());
   }
 
   ngOnDestroy() {
@@ -366,24 +393,97 @@ export class SortLabComponent implements OnInit, OnDestroy {
       this.reset();
     }
   }
+  // checkEmptyOrInvalid(index: number): void {
+  //   const value = this.numbers[index];
+  //   if (
+  //     value == null ||
+  //     isNaN(Number(value)) ||
+  //     !Number.isInteger(value) ||
+  //     Number(value) < 0
+  //   ) {
+  //     alert('Please enter a non-negative integer.');
+  //     this.removeNumber(index);
+  //   } else if (Number(value) > 1000) {
+  //     alert('Input number cannot be greater than 1000!');
+  //     this.removeNumber(index);
+  //   }
+  // }
+
+
   checkEmptyOrInvalid(index: number): void {
-    const value = this.numbers[index];
-    if (
-      value == null ||
-      isNaN(Number(value)) ||
-      !Number.isInteger(value) ||
-      Number(value) < 0
-    ) {
+    const rawValue = this.numbers[index];
+
+    // Nếu rỗng (gõ xoá hết) → xoá ngay
+    if (rawValue == null || String(rawValue).trim() === '') {
+      this.removeNumber(index);
+      return;
+    }
+
+    const value = Number(rawValue);
+
+    // Đang nhập dở, cho phép tiếp tục
+    if (isNaN(value)) {
+      return;
+    }
+
+    if (!Number.isInteger(value) || value < 0) {
       alert('Please enter a non-negative integer.');
-      this.removeNumber(index);
-    } else if (Number(value) > 1000) {
+      this.numbers[index] = this.previousValues[index];
+      return;
+    }
+
+    if (value > 1000) {
       alert('Input number cannot be greater than 1000!');
-      this.removeNumber(index);
+      this.numbers[index] = this.previousValues[index];
+      return;
+    }
+
+    this.previousValues[index] = value;
+  }
+
+
+  trackByIndex(index: number, item: any): number {
+    return index;
+  }
+
+  handleKeydown(event: KeyboardEvent, index: number): void {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+
+      const rawValue = this.numbers[index];
+      if (rawValue == null || String(rawValue).trim() === '') {
+        this.removeNumber(index);
+        return;
+      }
+
+      const value = Number(rawValue);
+
+      if (isNaN(value)) {
+        return;
+      }
+
+      if (!Number.isInteger(value) || value < 0) {
+        alert('Please enter a non-negative integer.');
+        this.numbers[index] = this.previousValues[index];
+        return;
+      }
+
+      if (value > 1000) {
+        alert('Input number cannot be greater than 1000!');
+        this.numbers[index] = this.previousValues[index];
+        return;
+      }
+
+      this.previousValues[index] = value;
+
+      // ✅ Thoát ô input (blur)
+      (event.target as HTMLInputElement).blur();
     }
   }
 
   removeNumber(index: number): void {
     this.numbers.splice(index, 1);
+    this.inputValues.splice(index, 1);
     this.reset();
   }
 

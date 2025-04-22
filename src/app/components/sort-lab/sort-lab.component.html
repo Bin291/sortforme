@@ -37,20 +37,25 @@
             </div>
       <h2>Input Data</h2>
       <div class="input-list">
-        <div *ngFor="let num of numbers; let i = index" class="input-item">
-          <input  matInput
-            type="number"
+        <div *ngFor="let num of numbers; let i = index; trackBy: trackByIndex" class="input-item">
+          <input
+            type="text"
             [(ngModel)]="numbers[i]"
             name="number-{{ i }}"
             (focus)="storePreviousValue(i)"
-            (blur)="checkEmptyOrInvalid(i)"
+            (keydown)="handleKeydown($event, i)"
+            inputmode="numeric"
+            pattern="[0-9]*"
           />
-
-
           <button mat-icon-button (click)="removeNumber(i)">
             <mat-icon>delete_outline</mat-icon>
           </button>
         </div>
+
+
+
+
+
       </div>
 
       <div class="add-input">
