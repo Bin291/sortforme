@@ -374,19 +374,48 @@ Complexity
 
 
 
+  // addNumber() {
+  //   if (this.newNumber !== null) {
+  //     if (this.newNumber > 1000) {
+  //       alert('Input number cannot be greater than 1000!');
+  //       this.newNumber = null;
+  //       return;
+  //     }
+  //     // Ensure numbers don't exceed reasonable limit for visualization
+  //     if (this.numbers.length >= 100) {
+  //       alert('Maximum number of elements (100) reached.');
+  //       this.newNumber = null;
+  //       return;
+  //     }
+  //     this.numbers.push(this.newNumber);
+  //     this.newNumber = null;
+  //     this.reset();
+  //   }
+  // }
   addNumber() {
     if (this.newNumber !== null) {
+      // Không cho phép thêm số âm hoặc số 0
+      if (this.newNumber <= 0) {
+        alert('Chỉ được thêm số nguyên dương lớn hơn 0!');
+        this.newNumber = null;
+        return;
+      }
+
+      // Kiểm tra giới hạn số lớn hơn 1000
       if (this.newNumber > 1000) {
-        alert('Input number cannot be greater than 1000!');
+        alert('Số nhập vào không được lớn hơn 1000!');
         this.newNumber = null;
         return;
       }
-      // Ensure numbers don't exceed reasonable limit for visualization
-      if (this.numbers.length >= 100) {
-        alert('Maximum number of elements (100) reached.');
+
+      // Giới hạn tối đa 100 phần tử trong danh sách
+      if (this.numbers.length >= 27) {
+        alert('Maximum number of elements reached (27).');
         this.newNumber = null;
         return;
       }
+
+      // Thêm số vào mảng và reset
       this.numbers.push(this.newNumber);
       this.newNumber = null;
       this.reset();
