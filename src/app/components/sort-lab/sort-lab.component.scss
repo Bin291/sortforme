@@ -536,6 +536,12 @@
   font-weight: bold;
 }
 
+.algorithm-overview p{
+  white-space: pre-wrap;
+  word-break: break-word;
+  flex: 1;
+}
+
 /* Footer */
 .footer {
   grid-column: 1 / 3;
