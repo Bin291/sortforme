@@ -11,13 +11,13 @@ import {RandomDialogComponent} from '../random-dialog/random-dialog.component';
 import {CodeHighlightComponent} from '../code-highlight/code-highlight.component';
 import {SortingChartComponent} from '../sorting-chart/sorting-chart.component';
 interface AlgorithmState {
-  name: string; // Kept: e.g., 'insertion', 'bubble'
-  numbers: number[]; // Kept: The array being sorted
-  currentStep: number; // Kept: General step counter
-  isFinished: boolean; // Kept: Flag indicating completion
-  startTime: number; // Kept: For timing execution
-  endTime?: number; // Kept: For timing execution
-  instructions?: string[]; // New: Pseudocode instructions for the current step
+  name: string;
+  numbers: number[];
+  currentStep: number;
+  isFinished: boolean;
+  startTime: number;
+  endTime?: number;
+  instructions?: string[];
 
   steps?: any[];
   history?: { // Kept: Used by backStep logic
@@ -354,7 +354,7 @@ Complexity
   }
 
   getCompactBarHeight(num: number, numbers: number[]): number {
-    const minHeight = 5; // Smaller minimum height for compact view
+    const minHeight = 5;
     const calculatedHeight = num * this.getCompactMaxHeight(numbers);
     return Math.max(minHeight, calculatedHeight);
   }
@@ -704,7 +704,7 @@ Complexity
       // Đang chạy -> thì pause
       this.isPaused = true;
       this.isPlaying = false;
-      this.playButtonText = 'Resume'; // Đổi nút thành Resume
+      this.playButtonText = 'Play';
       this.pauseButtonText = 'Paused'; // Cho biết đã dừng
       this.currentAction = 'Sorting paused.';
     } else if (this.isPaused) {
@@ -749,8 +749,6 @@ Complexity
         actionTaken = true; // Record that at least one step was taken
         // Update global line index if in single mode for code highlight
         if (this.mode === 'single') {
-          // this.currentLineIndex is updated inside runAlgorithmStep via this.stepChange.emit
-
         }
       }
     });
