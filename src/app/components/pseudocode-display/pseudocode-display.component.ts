@@ -11,9 +11,6 @@ export class PseudocodeDisplayComponent {
   @Input() pseudocodeLines: string[] = [];
   @Input() currentLine: number = -1;
 
-  /**
-   * Hàm xử lý escape ký tự HTML & giữ khoảng trắng
-   */
   formatLine(line: string): string {
     return line
       .replace(/</g, '&lt;')         // escape < > để tránh lỗi HTML

@@ -13,12 +13,9 @@ export class CodeHighlightComponent {
   @Input() codeLines: string[] = [];
   @Input() activeLine: number = -1;
 
-
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['activeLine']) {
       console.log('📌 Highlight line:', this.activeLine);
     }
   }
-
-
 }
