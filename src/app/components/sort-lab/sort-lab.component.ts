@@ -85,7 +85,7 @@ export class SortLabComponent implements OnInit, OnDestroy {
   mode: 'single' | 'dual' | 'all' = 'single';
   selectedAlgorithm: string = 'insertion';
   selectedAlgorithm2: string = 'bubble';
-  numbers: number[] = [1, 2, 10, 23, 12, 18, 9 , 20, 25, 6, 7];
+  numbers: number[] = [1, 2, 10, 23, 12, 18, 9, 20, 25, 6, 7];
   newNumber: number | null = null;
   @Input() algorithmDescription: string = '';
   speed: number = 1;
@@ -101,9 +101,11 @@ export class SortLabComponent implements OnInit, OnDestroy {
   @Output() stepChange = new EventEmitter<number>();
   @ViewChild('chart') chartComponent!: any;
   previousValues: number[] = [];
+
   storePreviousValue(index: number): void {
     this.previousValues[index] = this.numbers[index];
   }
+
   algorithmStates: AlgorithmState[] = [];
   algorithms: string[] = ['insertion', 'bubble', 'quick', 'shell', 'radix', 'selection'];
   algorithmNames: { [key: string]: string } = {
@@ -137,14 +139,14 @@ export class SortLabComponent implements OnInit, OnDestroy {
     ],
     insertion: [
       'for (int i = 1; i < n; i++) {',
-      'int key = arr[i];',
-      'int j = i - 1;',
-      'while (j >= 0 && arr[j] > key) {',
-      'arr[j + 1] = arr[j];',
-      'j--;',
-      '}',
-      'arr[j + 1] = key;',
-      '}'
+      '   int key = arr[i];',
+      '   int j = i - 1;',
+      '   while (j >= 0 && arr[j] > key) {',
+      '     arr[j + 1] = arr[j];',
+      '       j--;',
+      '    }',
+      '    arr[j + 1] = key;',
+      ' }'
     ],
     quick: [
       'void quickSort(int arr[], int low, int high) {',
@@ -242,7 +244,10 @@ Complexity
   - Space: O(1)`,
 
   };
-  constructor(private dialog: MatDialog) {}
+
+  constructor(private dialog: MatDialog) {
+  }
+
   ngOnInit() {
     const savedMode = localStorage.getItem('sortLabMode') as 'single' | 'dual' | 'all';
     this.mode = savedMode || 'single';
@@ -250,6 +255,7 @@ Complexity
     this.reset();
     this.inputValues = this.numbers.map(n => n.toString());
   }
+
   ngOnDestroy() {
     this.clearTimeout();
   }
@@ -396,7 +402,7 @@ Complexity
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result && result <= 100 && result > 0) { // Limit random elements
-        this.numbers = Array.from({ length: result }, () => Math.floor(Math.random() * 100) + 1); // Adjust range if needed
+        this.numbers = Array.from({length: result}, () => Math.floor(Math.random() * 100) + 1); // Adjust range if needed
         this.reset();
       } else if (result > 100) {
         alert("Maximum number of elements to randomize is 100.");
@@ -421,13 +427,20 @@ Complexity
 
     if (this.mode === 'single') {
       this.algorithmStates = [
-        { name: this.selectedAlgorithm, numbers: [...this.numbers], currentStep: 0, isFinished: false, startTime: 0, instructions: [...this.updateDescription()]},
+        {
+          name: this.selectedAlgorithm,
+          numbers: [...this.numbers],
+          currentStep: 0,
+          isFinished: false,
+          startTime: 0,
+          instructions: [...this.updateDescription()]
+        },
 
       ];
     } else if (this.mode === 'dual') {
       this.algorithmStates = [
-        { name: this.selectedAlgorithm, numbers: [...this.numbers], currentStep: 0, isFinished: false, startTime: 0 },
-        { name: this.selectedAlgorithm2, numbers: [...this.numbers], currentStep: 0, isFinished: false, startTime: 0 },
+        {name: this.selectedAlgorithm, numbers: [...this.numbers], currentStep: 0, isFinished: false, startTime: 0},
+        {name: this.selectedAlgorithm2, numbers: [...this.numbers], currentStep: 0, isFinished: false, startTime: 0},
       ];
     } else if (this.mode === 'all') {
       this.algorithmStates = this.algorithms.map(algo => ({
@@ -478,6 +491,7 @@ Complexity
   }
 
   isPaused = false;
+
   togglePause() {
     if (this.isPlaying) {
       // Đang chạy -> thì pause
@@ -501,7 +515,6 @@ Complexity
     this.currentAction = 'Sorting resumed!';
     this.runAlgorithms(); // tiếp tục thực thi sorting step
   }
-
 
 
   nextStep() {
@@ -551,20 +564,26 @@ Complexity
       this.currentAction = 'Stepped back';
     }
   }
+
   canGoBack(): boolean {
     return !this.isPlaying && this.previousStates.length > 0;
   }
 
-  onSpeedChange(event: Event) {
-    const inputElement = event.target as HTMLInputElement;
-    const value = Number(inputElement.value);
-    console.log('Speed changed to:', value);
-    this.speed = Math.max(0.1, value);
-    if (this.isPlaying && !this.isPaused) {
-      this.clearTimeout();
-      this.runAlgorithms();
+ onSpeedChange(event: Event) {
+      const inputElement = event.target as HTMLInputElement;
+      const value = Number(inputElement.value);
+      console.log('Speed changed to:', value);
+      this.speed = Math.max(0.1, value);
+      console.log('Formatted speed label:', this.formatSpeedLabel(this.speed));
+      if (this.isPlaying && !this.isPaused) {
+        this.clearTimeout();
+        this.runAlgorithms();
+      }
     }
-  }
+    formatSpeedLabel(value: number): string {
+      return `${value}x`;
+    }
+
   updateDescription(): string[] {
     this.algorithmDescription = this.algorithmDescriptions[this.selectedAlgorithm] || ' ';
     this.currentPseudoCode = this.pseudoCodes[this.selectedAlgorithm] || [];
@@ -572,17 +591,18 @@ Complexity
     this.stepChange.emit(this.currentLineIndex);
     return this.currentPseudoCode;
   }
+
   getBarColor(index: number, state: AlgorithmState): string {
     if (state.isFinished) {
       return '#4CAF50';
     }
     if (state.swapIndices) {
-          if (index === state.swapIndices[0]) {
-            return '#1c82ff';
-          } else if (index === state.swapIndices[1]) {
-            return '#ff5722';
-          }
-        }
+      if (index === state.swapIndices[0]) {
+        return '#1c82ff';
+      } else if (index === state.swapIndices[1]) {
+        return '#ff5722';
+      }
+    }
     if (state.compareIndices) {
       if (index === state.compareIndices[0] || index === state.compareIndices[1]) {
         return '#ff27e3';
@@ -590,6 +610,7 @@ Complexity
     }
     return '#673ab7';
   }
+
   runAlgorithms() {
     if (!this.isPlaying || this.isPaused) return;
     this.clearTimeout();
@@ -658,6 +679,7 @@ Complexity
           } else state.isFinished = true;
           break;
         case 'bubble':
+
           state.i = 0;
           state.j = 0;
           state.swappedInPass = false;
@@ -671,34 +693,34 @@ Complexity
           break;
 
         case 'quick':
-              if (!state.steps) {
-                state.steps = this.generateQuickSortSteps([...nums], 0, nums.length - 1);
-                if (!state.steps) {
-                  state.isFinished = true;
-                  this.currentAction = "Error generating QuickSort steps.";
-                  this.currentLineIndex = -1;
-                  break;
-                }
-              }
-              if (state.currentStep < state.steps.length) {
-                const step = state.steps[state.currentStep];
-                this.currentLineIndex = step.line ?? 2;
-                this.stepChange.emit(this.currentLineIndex);
-                if (step.snapshot) {
-                  this.numbers = [...step.snapshot];
-                }
-                state.swapIndices = [step.i, step.j];
-                this.currentAction = `QuickSort: Swapped ${step.snapshot?.[step.i]} and ${step.snapshot?.[step.j]}`;
-                state.currentStep++;
-              } else {
-                if (!state.isFinished) {
-                  state.isFinished = true;
-                  state.swapIndices = undefined;
-                  this.currentAction = "QuickSort finished.";
-                  this.currentLineIndex = -1;
-                }
-              }
+          if (!state.steps) {
+            state.steps = this.generateQuickSortSteps([...nums], 0, nums.length - 1);
+            if (!state.steps) {
+              state.isFinished = true;
+              this.currentAction = "Error generating QuickSort steps.";
+              this.currentLineIndex = -1;
               break;
+            }
+          }
+          if (state.currentStep < state.steps.length) {
+            const step = state.steps[state.currentStep];
+            this.currentLineIndex = step.line ?? 2;
+            this.stepChange.emit(this.currentLineIndex);
+            if (step.snapshot) {
+              this.numbers = [...step.snapshot];
+            }
+            state.swapIndices = [step.i, step.j];
+            this.currentAction = `QuickSort: Swapped ${step.snapshot?.[step.i]} and ${step.snapshot?.[step.j]}`;
+            state.currentStep++;
+          } else {
+            if (!state.isFinished) {
+              state.isFinished = true;
+              state.swapIndices = undefined;
+              this.currentAction = "QuickSort finished.";
+              this.currentLineIndex = -1;
+            }
+          }
+          break;
         case 'shell':
           state.shellGap = Math.floor(nums.length / 2);
           if (state.shellGap > 0) {
@@ -745,7 +767,7 @@ Complexity
           if (state.j! >= 0 && nums[state.j!] > state.key!) {
             nextLineIndex = 2; // Emit 2 để UI hiển thị dòng 3
             this.stepChange.emit(nextLineIndex);
-            nextLineIndex = 3; // Emit 3 để UI hiển thị dòng 4
+            nextLineIndex = 3;
             this.stepChange.emit(nextLineIndex);
             nums[state.j! + 1] = nums[state.j!];
             state.swapIndices = [state.j! + 1, state.j!];
@@ -794,13 +816,15 @@ Complexity
           if (state.j! < n_bubble - state.i! - 1) {
             nextLineIndex = 1;
             this.stepChange.emit(nextLineIndex);
-console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.currentAction, 'State:', state);;
+            console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.currentAction, 'State:', state);
+            ;
             nextLineIndex = 2;
             state.compareIndices = [state.j!, state.j! + 1];
             this.currentAction = `Comparing ${nums[state.j!]} and ${nums[state.j! + 1]}`;
             if (nums[state.j!] > nums[state.j! + 1]) {
               this.stepChange.emit(nextLineIndex);
-console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.currentAction, 'State:', state);;
+              console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.currentAction, 'State:', state);
+              ;
               nextLineIndex = 3;
               [nums[state.j!], nums[state.j! + 1]] = [nums[state.j! + 1], nums[state.j!]];
               state.swapIndices = [state.j!, state.j! + 1];
@@ -839,13 +863,15 @@ console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.current
           if (state.j! < n_selection) {
             nextLineIndex = 1;
             this.stepChange.emit(nextLineIndex);
-console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.currentAction, 'State:', state);;
+            console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.currentAction, 'State:', state);
+            ;
             nextLineIndex = 2;
             state.compareIndices = [state.j!, state.minIndex!];
             this.currentAction = `Comparing ${nums[state.j!]} with current min ${nums[state.minIndex!]}`;
             if (nums[state.j!] < nums[state.minIndex!]) {
               this.stepChange.emit(nextLineIndex);
-console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.currentAction, 'State:', state);;
+              console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.currentAction, 'State:', state);
+              ;
               nextLineIndex = 3;
               state.minIndex = state.j!;
               this.currentAction += `. New min found: ${nums[state.minIndex!]}`;
@@ -892,7 +918,8 @@ console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.current
           const step = state.steps[state.currentStep];
           nextLineIndex = step.line ?? 2;
           this.stepChange.emit(nextLineIndex);
-console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.currentAction, 'State:', state);;
+          console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.currentAction, 'State:', state);
+          ;
           console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.currentAction, 'State:', state);
           if (step.snapshot) {
             state.numbers = [...step.snapshot];
@@ -919,7 +946,8 @@ console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.current
 
               nextLineIndex = 3;
               this.stepChange.emit(nextLineIndex);
-console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.currentAction, 'State:', state);;
+              console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.currentAction, 'State:', state);
+              ;
               nextLineIndex = 4; // Action: arr[j] = arr[j-gap]
               nums[state.shellJ!] = nums[state.shellJ! - state.shellGap!];
               state.swapIndices = [state.shellJ!, state.shellJ! - state.shellGap!];
@@ -929,7 +957,8 @@ console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.current
             } else {
               nextLineIndex = 3;
               this.stepChange.emit(nextLineIndex);
-console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.currentAction, 'State:', state);;
+              console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.currentAction, 'State:', state);
+              ;
               nextLineIndex = 6;
               nums[state.shellJ!] = state.shellTemp!;
               state.swapIndices = [state.shellJ!, state.shellI!];
@@ -972,25 +1001,29 @@ console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.current
           this.currentAction = `Radix Sort: Processing digit place ${digit}`;
           nextLineIndex = 1;
           this.stepChange.emit(nextLineIndex);
-console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.currentAction, 'State:', state);;
+          console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.currentAction, 'State:', state);
+          ;
           const output = new Array(nums.length).fill(0);
           const count = new Array(10).fill(0);
           nextLineIndex = 2;
           this.stepChange.emit(nextLineIndex);
-console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.currentAction, 'State:', state);;
+          console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.currentAction, 'State:', state);
+          ;
           for (let i = 0; i < nums.length; i++) {
             const digitValue = Math.floor(nums[i] / digit) % 10;
             count[digitValue]++;
           }
           nextLineIndex = 3; // cumulative count
           this.stepChange.emit(nextLineIndex);
-console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.currentAction, 'State:', state);;
+          console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.currentAction, 'State:', state);
+          ;
           for (let i = 1; i < 10; i++) {
             count[i] += count[i - 1];
           }
           nextLineIndex = 4;
           this.stepChange.emit(nextLineIndex);
-console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.currentAction, 'State:', state);;
+          console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.currentAction, 'State:', state);
+          ;
           for (let i = nums.length - 1; i >= 0; i--) {
             const digitValue = Math.floor(nums[i] / digit) % 10;
             output[count[digitValue] - 1] = nums[i];
@@ -998,7 +1031,8 @@ console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.current
           }
           nextLineIndex = 5;
           this.stepChange.emit(nextLineIndex);
-console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.currentAction, 'State:', state);;
+          console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.currentAction, 'State:', state);
+          ;
           let changed = false;
           for (let i = 0; i < nums.length; i++) {
             if (nums[i] !== output[i]) changed = true;
@@ -1062,9 +1096,9 @@ console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.current
 
   quickSortSteps(arr: number[], low: number, high: number, steps: Step[]): void {
     const stack: { low: number; high: number }[] = [];
-    stack.push({ low, high });
+    stack.push({low, high});
     while (stack.length > 0) {
-      const { low, high } = stack.pop()!;
+      const {low, high} = stack.pop()!;
       if (low < high) {
         steps.push({
           action: 'recursive-call',
@@ -1074,11 +1108,12 @@ console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.current
           line: 1
         });
         const pi = this.partition(arr, low, high, steps);
-        stack.push({ low: pi + 1, high: high });
-        stack.push({ low: low, high: pi - 1 });
+        stack.push({low: pi + 1, high: high});
+        stack.push({low: low, high: pi - 1});
       }
     }
   }
+
   partition(arr: number[], low: number, high: number, steps: any[]): number {
     const pivot = arr[high];
     let i = low - 1;
@@ -1123,11 +1158,9 @@ console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.current
       line: 5
     });
     return i + 1;
-    }
-
-  formatSpeedLabel(value: number): string {
-    return `${value}x`;
   }
+
+
 
   getExecutionTime(state: AlgorithmState): string {
     if (!state.startTime) return '...'; // Not started
@@ -1139,4 +1172,6 @@ console.log('Emitting currentLineIndex:', nextLineIndex, 'Action:', this.current
   getAvailableAlgorithmsForSecondDropdown(): string[] {
     return this.algorithms.filter(algo => algo !== this.selectedAlgorithm);
   }
+
+
 }

@@ -32,7 +32,6 @@
 .container-logo{
   display: flex;
   align-items: center;
-  gap: 10px;
 }
 
 .logo{
@@ -84,14 +83,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 0 1px; /* Set left and right margins to 1px */
-  width: 5px; /* Minimum width */
-  border-radius: 3px 3px 0 0; /* Updated border radius */
+  margin: 0 1px;
+  width: 5px;
+  border-radius: 3px 3px 0 0;
 }
 
 .header h1 {
   font-size: 1.8rem;
-  color: black;
+  color: #1E92F4;
   margin: 0;
 }
 
@@ -486,7 +485,6 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow-x: hidden;
   .pe1{
-    //padding: 5px;
     height: 50%;
     width: 100%;
     display: flex;
@@ -495,7 +493,6 @@
     border-radius: 6px;
   }
 }
-
 .original-chart{
   padding: 5px;
   min-height: 25%;
@@ -504,8 +501,6 @@
   display: flex;
   justify-content: center;
   align-items: flex-end;
-
-
 }
 
 .algorithm-overview,
