@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "appSort": {
+    "appsort": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -74,10 +74,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "appSort:build:production"
+              "buildTarget": "appsort:build:production"
             },
             "development": {
-              "buildTarget": "appSort:build:development"
+              "buildTarget": "appsort:build:development"
             }
           },
           "defaultConfiguration": "development"
